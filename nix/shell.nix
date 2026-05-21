@@ -1,6 +1,6 @@
 {
   perSystem =
-    { pkgs, ... }:
+    { lib, pkgs, ... }:
     {
       devShells.default =
         let
@@ -30,6 +30,16 @@
             GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
 
             CMAKE_INSTALL_PREFIX = "build/linux/x64/debug/bundle";
+
+            LD_LIBRARY_PATH =
+              with pkgs;
+              toString (
+                lib.makeLibraryPath [
+                  sqlite
+                  libsecret
+                  gtk3
+                ]
+              );
           };
           nativeBuildInputs = with pkgs; [
             pkg-config
@@ -42,7 +52,6 @@
               androidSdk
               zulu21
               gradle_9
-
             ]
             ++ lib.optionals stdenv.hostPlatform.isLinux [
               libsecret.dev
