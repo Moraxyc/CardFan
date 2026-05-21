@@ -34,6 +34,7 @@ class SimCardsPage extends ConsumerWidget {
         error: (error, stackTrace) => Center(child: Text('加载 SIM 卡失败：$error')),
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: 'simCardsAddFab',
         onPressed: () => context.pushNamed('newSimCard'),
         child: const Icon(Icons.add),
       ),

@@ -18,6 +18,9 @@ class BankCardsDao extends DatabaseAccessor<AppDatabase>
   Stream<List<BankCard>> watchActive() =>
       (select(bankCards)..where((row) => row.deletedAt.isNull())).watch();
 
+  Future<List<BankCard>> getActive() =>
+      (select(bankCards)..where((row) => row.deletedAt.isNull())).get();
+
   Future<void> updateRecord(BankCardsCompanion entry) {
     final id = entry.id.value;
     return (update(bankCards)..where((row) => row.id.equals(id))).write(

@@ -1,4 +1,3 @@
-import 'package:cardfan/core/database/tables/bills.dart';
 import 'package:drift/drift.dart';
 
 class Reminders extends Table {
@@ -6,8 +5,6 @@ class Reminders extends Table {
   TextColumn get title => text()();
   TextColumn get body => text().nullable()();
   DateTimeColumn get scheduledAt => dateTime()();
-  TextColumn get relatedBillId =>
-      text().nullable().references(Bills, #id, onDelete: KeyAction.setNull)();
   IntColumn get notificationId => integer().nullable()();
   BoolColumn get enabled => boolean().withDefault(const Constant(true))();
   DateTimeColumn get createdAt => dateTime()();

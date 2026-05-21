@@ -1564,773 +1564,6 @@ class BankCardsCompanion extends UpdateCompanion<BankCard> {
   }
 }
 
-class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
-  @override
-  final GeneratedDatabase attachedDatabase;
-  final String? _alias;
-  $BillsTable(this.attachedDatabase, [this._alias]);
-  static const VerificationMeta _idMeta = const VerificationMeta('id');
-  @override
-  late final GeneratedColumn<String> id = GeneratedColumn<String>(
-    'id',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _titleMeta = const VerificationMeta('title');
-  @override
-  late final GeneratedColumn<String> title = GeneratedColumn<String>(
-    'title',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _amountCentsMeta = const VerificationMeta(
-    'amountCents',
-  );
-  @override
-  late final GeneratedColumn<int> amountCents = GeneratedColumn<int>(
-    'amount_cents',
-    aliasedName,
-    false,
-    type: DriftSqlType.int,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _dueDateMeta = const VerificationMeta(
-    'dueDate',
-  );
-  @override
-  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
-    'due_date',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _paidAtMeta = const VerificationMeta('paidAt');
-  @override
-  late final GeneratedColumn<DateTime> paidAt = GeneratedColumn<DateTime>(
-    'paid_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _bankCardIdMeta = const VerificationMeta(
-    'bankCardId',
-  );
-  @override
-  late final GeneratedColumn<String> bankCardId = GeneratedColumn<String>(
-    'bank_card_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES bank_cards (id) ON DELETE SET NULL',
-    ),
-  );
-  static const VerificationMeta _simCardIdMeta = const VerificationMeta(
-    'simCardId',
-  );
-  @override
-  late final GeneratedColumn<String> simCardId = GeneratedColumn<String>(
-    'sim_card_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES sim_cards (id) ON DELETE SET NULL',
-    ),
-  );
-  static const VerificationMeta _notesMeta = const VerificationMeta('notes');
-  @override
-  late final GeneratedColumn<String> notes = GeneratedColumn<String>(
-    'notes',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _createdAtMeta = const VerificationMeta(
-    'createdAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
-    'created_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
-    'updatedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
-    'updated_at',
-    aliasedName,
-    false,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: true,
-  );
-  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
-    'deletedAt',
-  );
-  @override
-  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
-    'deleted_at',
-    aliasedName,
-    true,
-    type: DriftSqlType.dateTime,
-    requiredDuringInsert: false,
-  );
-  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
-    'syncStatus',
-  );
-  @override
-  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
-    'sync_status',
-    aliasedName,
-    false,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultValue: const Constant('local'),
-  );
-  static const VerificationMeta _remoteIdMeta = const VerificationMeta(
-    'remoteId',
-  );
-  @override
-  late final GeneratedColumn<String> remoteId = GeneratedColumn<String>(
-    'remote_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-  );
-  @override
-  List<GeneratedColumn> get $columns => [
-    id,
-    title,
-    amountCents,
-    dueDate,
-    paidAt,
-    bankCardId,
-    simCardId,
-    notes,
-    createdAt,
-    updatedAt,
-    deletedAt,
-    syncStatus,
-    remoteId,
-  ];
-  @override
-  String get aliasedName => _alias ?? actualTableName;
-  @override
-  String get actualTableName => $name;
-  static const String $name = 'bills';
-  @override
-  VerificationContext validateIntegrity(
-    Insertable<Bill> instance, {
-    bool isInserting = false,
-  }) {
-    final context = VerificationContext();
-    final data = instance.toColumns(true);
-    if (data.containsKey('id')) {
-      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
-    } else if (isInserting) {
-      context.missing(_idMeta);
-    }
-    if (data.containsKey('title')) {
-      context.handle(
-        _titleMeta,
-        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_titleMeta);
-    }
-    if (data.containsKey('amount_cents')) {
-      context.handle(
-        _amountCentsMeta,
-        amountCents.isAcceptableOrUnknown(
-          data['amount_cents']!,
-          _amountCentsMeta,
-        ),
-      );
-    } else if (isInserting) {
-      context.missing(_amountCentsMeta);
-    }
-    if (data.containsKey('due_date')) {
-      context.handle(
-        _dueDateMeta,
-        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_dueDateMeta);
-    }
-    if (data.containsKey('paid_at')) {
-      context.handle(
-        _paidAtMeta,
-        paidAt.isAcceptableOrUnknown(data['paid_at']!, _paidAtMeta),
-      );
-    }
-    if (data.containsKey('bank_card_id')) {
-      context.handle(
-        _bankCardIdMeta,
-        bankCardId.isAcceptableOrUnknown(
-          data['bank_card_id']!,
-          _bankCardIdMeta,
-        ),
-      );
-    }
-    if (data.containsKey('sim_card_id')) {
-      context.handle(
-        _simCardIdMeta,
-        simCardId.isAcceptableOrUnknown(data['sim_card_id']!, _simCardIdMeta),
-      );
-    }
-    if (data.containsKey('notes')) {
-      context.handle(
-        _notesMeta,
-        notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
-      );
-    }
-    if (data.containsKey('created_at')) {
-      context.handle(
-        _createdAtMeta,
-        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_createdAtMeta);
-    }
-    if (data.containsKey('updated_at')) {
-      context.handle(
-        _updatedAtMeta,
-        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
-      );
-    } else if (isInserting) {
-      context.missing(_updatedAtMeta);
-    }
-    if (data.containsKey('deleted_at')) {
-      context.handle(
-        _deletedAtMeta,
-        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
-      );
-    }
-    if (data.containsKey('sync_status')) {
-      context.handle(
-        _syncStatusMeta,
-        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
-      );
-    }
-    if (data.containsKey('remote_id')) {
-      context.handle(
-        _remoteIdMeta,
-        remoteId.isAcceptableOrUnknown(data['remote_id']!, _remoteIdMeta),
-      );
-    }
-    return context;
-  }
-
-  @override
-  Set<GeneratedColumn> get $primaryKey => {id};
-  @override
-  Bill map(Map<String, dynamic> data, {String? tablePrefix}) {
-    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
-    return Bill(
-      id: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}id'],
-      )!,
-      title: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}title'],
-      )!,
-      amountCents: attachedDatabase.typeMapping.read(
-        DriftSqlType.int,
-        data['${effectivePrefix}amount_cents'],
-      )!,
-      dueDate: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}due_date'],
-      )!,
-      paidAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}paid_at'],
-      ),
-      bankCardId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}bank_card_id'],
-      ),
-      simCardId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}sim_card_id'],
-      ),
-      notes: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}notes'],
-      ),
-      createdAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}created_at'],
-      )!,
-      updatedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}updated_at'],
-      )!,
-      deletedAt: attachedDatabase.typeMapping.read(
-        DriftSqlType.dateTime,
-        data['${effectivePrefix}deleted_at'],
-      ),
-      syncStatus: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}sync_status'],
-      )!,
-      remoteId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}remote_id'],
-      ),
-    );
-  }
-
-  @override
-  $BillsTable createAlias(String alias) {
-    return $BillsTable(attachedDatabase, alias);
-  }
-}
-
-class Bill extends DataClass implements Insertable<Bill> {
-  final String id;
-  final String title;
-  final int amountCents;
-  final DateTime dueDate;
-  final DateTime? paidAt;
-  final String? bankCardId;
-  final String? simCardId;
-  final String? notes;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final DateTime? deletedAt;
-  final String syncStatus;
-  final String? remoteId;
-  const Bill({
-    required this.id,
-    required this.title,
-    required this.amountCents,
-    required this.dueDate,
-    this.paidAt,
-    this.bankCardId,
-    this.simCardId,
-    this.notes,
-    required this.createdAt,
-    required this.updatedAt,
-    this.deletedAt,
-    required this.syncStatus,
-    this.remoteId,
-  });
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    map['id'] = Variable<String>(id);
-    map['title'] = Variable<String>(title);
-    map['amount_cents'] = Variable<int>(amountCents);
-    map['due_date'] = Variable<DateTime>(dueDate);
-    if (!nullToAbsent || paidAt != null) {
-      map['paid_at'] = Variable<DateTime>(paidAt);
-    }
-    if (!nullToAbsent || bankCardId != null) {
-      map['bank_card_id'] = Variable<String>(bankCardId);
-    }
-    if (!nullToAbsent || simCardId != null) {
-      map['sim_card_id'] = Variable<String>(simCardId);
-    }
-    if (!nullToAbsent || notes != null) {
-      map['notes'] = Variable<String>(notes);
-    }
-    map['created_at'] = Variable<DateTime>(createdAt);
-    map['updated_at'] = Variable<DateTime>(updatedAt);
-    if (!nullToAbsent || deletedAt != null) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt);
-    }
-    map['sync_status'] = Variable<String>(syncStatus);
-    if (!nullToAbsent || remoteId != null) {
-      map['remote_id'] = Variable<String>(remoteId);
-    }
-    return map;
-  }
-
-  BillsCompanion toCompanion(bool nullToAbsent) {
-    return BillsCompanion(
-      id: Value(id),
-      title: Value(title),
-      amountCents: Value(amountCents),
-      dueDate: Value(dueDate),
-      paidAt: paidAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(paidAt),
-      bankCardId: bankCardId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(bankCardId),
-      simCardId: simCardId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(simCardId),
-      notes: notes == null && nullToAbsent
-          ? const Value.absent()
-          : Value(notes),
-      createdAt: Value(createdAt),
-      updatedAt: Value(updatedAt),
-      deletedAt: deletedAt == null && nullToAbsent
-          ? const Value.absent()
-          : Value(deletedAt),
-      syncStatus: Value(syncStatus),
-      remoteId: remoteId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(remoteId),
-    );
-  }
-
-  factory Bill.fromJson(
-    Map<String, dynamic> json, {
-    ValueSerializer? serializer,
-  }) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return Bill(
-      id: serializer.fromJson<String>(json['id']),
-      title: serializer.fromJson<String>(json['title']),
-      amountCents: serializer.fromJson<int>(json['amountCents']),
-      dueDate: serializer.fromJson<DateTime>(json['dueDate']),
-      paidAt: serializer.fromJson<DateTime?>(json['paidAt']),
-      bankCardId: serializer.fromJson<String?>(json['bankCardId']),
-      simCardId: serializer.fromJson<String?>(json['simCardId']),
-      notes: serializer.fromJson<String?>(json['notes']),
-      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
-      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
-      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
-      syncStatus: serializer.fromJson<String>(json['syncStatus']),
-      remoteId: serializer.fromJson<String?>(json['remoteId']),
-    );
-  }
-  @override
-  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
-    serializer ??= driftRuntimeOptions.defaultSerializer;
-    return <String, dynamic>{
-      'id': serializer.toJson<String>(id),
-      'title': serializer.toJson<String>(title),
-      'amountCents': serializer.toJson<int>(amountCents),
-      'dueDate': serializer.toJson<DateTime>(dueDate),
-      'paidAt': serializer.toJson<DateTime?>(paidAt),
-      'bankCardId': serializer.toJson<String?>(bankCardId),
-      'simCardId': serializer.toJson<String?>(simCardId),
-      'notes': serializer.toJson<String?>(notes),
-      'createdAt': serializer.toJson<DateTime>(createdAt),
-      'updatedAt': serializer.toJson<DateTime>(updatedAt),
-      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
-      'syncStatus': serializer.toJson<String>(syncStatus),
-      'remoteId': serializer.toJson<String?>(remoteId),
-    };
-  }
-
-  Bill copyWith({
-    String? id,
-    String? title,
-    int? amountCents,
-    DateTime? dueDate,
-    Value<DateTime?> paidAt = const Value.absent(),
-    Value<String?> bankCardId = const Value.absent(),
-    Value<String?> simCardId = const Value.absent(),
-    Value<String?> notes = const Value.absent(),
-    DateTime? createdAt,
-    DateTime? updatedAt,
-    Value<DateTime?> deletedAt = const Value.absent(),
-    String? syncStatus,
-    Value<String?> remoteId = const Value.absent(),
-  }) => Bill(
-    id: id ?? this.id,
-    title: title ?? this.title,
-    amountCents: amountCents ?? this.amountCents,
-    dueDate: dueDate ?? this.dueDate,
-    paidAt: paidAt.present ? paidAt.value : this.paidAt,
-    bankCardId: bankCardId.present ? bankCardId.value : this.bankCardId,
-    simCardId: simCardId.present ? simCardId.value : this.simCardId,
-    notes: notes.present ? notes.value : this.notes,
-    createdAt: createdAt ?? this.createdAt,
-    updatedAt: updatedAt ?? this.updatedAt,
-    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
-    syncStatus: syncStatus ?? this.syncStatus,
-    remoteId: remoteId.present ? remoteId.value : this.remoteId,
-  );
-  Bill copyWithCompanion(BillsCompanion data) {
-    return Bill(
-      id: data.id.present ? data.id.value : this.id,
-      title: data.title.present ? data.title.value : this.title,
-      amountCents: data.amountCents.present
-          ? data.amountCents.value
-          : this.amountCents,
-      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
-      paidAt: data.paidAt.present ? data.paidAt.value : this.paidAt,
-      bankCardId: data.bankCardId.present
-          ? data.bankCardId.value
-          : this.bankCardId,
-      simCardId: data.simCardId.present ? data.simCardId.value : this.simCardId,
-      notes: data.notes.present ? data.notes.value : this.notes,
-      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
-      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
-      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
-      syncStatus: data.syncStatus.present
-          ? data.syncStatus.value
-          : this.syncStatus,
-      remoteId: data.remoteId.present ? data.remoteId.value : this.remoteId,
-    );
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('Bill(')
-          ..write('id: $id, ')
-          ..write('title: $title, ')
-          ..write('amountCents: $amountCents, ')
-          ..write('dueDate: $dueDate, ')
-          ..write('paidAt: $paidAt, ')
-          ..write('bankCardId: $bankCardId, ')
-          ..write('simCardId: $simCardId, ')
-          ..write('notes: $notes, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('syncStatus: $syncStatus, ')
-          ..write('remoteId: $remoteId')
-          ..write(')'))
-        .toString();
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    id,
-    title,
-    amountCents,
-    dueDate,
-    paidAt,
-    bankCardId,
-    simCardId,
-    notes,
-    createdAt,
-    updatedAt,
-    deletedAt,
-    syncStatus,
-    remoteId,
-  );
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      (other is Bill &&
-          other.id == this.id &&
-          other.title == this.title &&
-          other.amountCents == this.amountCents &&
-          other.dueDate == this.dueDate &&
-          other.paidAt == this.paidAt &&
-          other.bankCardId == this.bankCardId &&
-          other.simCardId == this.simCardId &&
-          other.notes == this.notes &&
-          other.createdAt == this.createdAt &&
-          other.updatedAt == this.updatedAt &&
-          other.deletedAt == this.deletedAt &&
-          other.syncStatus == this.syncStatus &&
-          other.remoteId == this.remoteId);
-}
-
-class BillsCompanion extends UpdateCompanion<Bill> {
-  final Value<String> id;
-  final Value<String> title;
-  final Value<int> amountCents;
-  final Value<DateTime> dueDate;
-  final Value<DateTime?> paidAt;
-  final Value<String?> bankCardId;
-  final Value<String?> simCardId;
-  final Value<String?> notes;
-  final Value<DateTime> createdAt;
-  final Value<DateTime> updatedAt;
-  final Value<DateTime?> deletedAt;
-  final Value<String> syncStatus;
-  final Value<String?> remoteId;
-  final Value<int> rowid;
-  const BillsCompanion({
-    this.id = const Value.absent(),
-    this.title = const Value.absent(),
-    this.amountCents = const Value.absent(),
-    this.dueDate = const Value.absent(),
-    this.paidAt = const Value.absent(),
-    this.bankCardId = const Value.absent(),
-    this.simCardId = const Value.absent(),
-    this.notes = const Value.absent(),
-    this.createdAt = const Value.absent(),
-    this.updatedAt = const Value.absent(),
-    this.deletedAt = const Value.absent(),
-    this.syncStatus = const Value.absent(),
-    this.remoteId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  });
-  BillsCompanion.insert({
-    required String id,
-    required String title,
-    required int amountCents,
-    required DateTime dueDate,
-    this.paidAt = const Value.absent(),
-    this.bankCardId = const Value.absent(),
-    this.simCardId = const Value.absent(),
-    this.notes = const Value.absent(),
-    required DateTime createdAt,
-    required DateTime updatedAt,
-    this.deletedAt = const Value.absent(),
-    this.syncStatus = const Value.absent(),
-    this.remoteId = const Value.absent(),
-    this.rowid = const Value.absent(),
-  }) : id = Value(id),
-       title = Value(title),
-       amountCents = Value(amountCents),
-       dueDate = Value(dueDate),
-       createdAt = Value(createdAt),
-       updatedAt = Value(updatedAt);
-  static Insertable<Bill> custom({
-    Expression<String>? id,
-    Expression<String>? title,
-    Expression<int>? amountCents,
-    Expression<DateTime>? dueDate,
-    Expression<DateTime>? paidAt,
-    Expression<String>? bankCardId,
-    Expression<String>? simCardId,
-    Expression<String>? notes,
-    Expression<DateTime>? createdAt,
-    Expression<DateTime>? updatedAt,
-    Expression<DateTime>? deletedAt,
-    Expression<String>? syncStatus,
-    Expression<String>? remoteId,
-    Expression<int>? rowid,
-  }) {
-    return RawValuesInsertable({
-      if (id != null) 'id': id,
-      if (title != null) 'title': title,
-      if (amountCents != null) 'amount_cents': amountCents,
-      if (dueDate != null) 'due_date': dueDate,
-      if (paidAt != null) 'paid_at': paidAt,
-      if (bankCardId != null) 'bank_card_id': bankCardId,
-      if (simCardId != null) 'sim_card_id': simCardId,
-      if (notes != null) 'notes': notes,
-      if (createdAt != null) 'created_at': createdAt,
-      if (updatedAt != null) 'updated_at': updatedAt,
-      if (deletedAt != null) 'deleted_at': deletedAt,
-      if (syncStatus != null) 'sync_status': syncStatus,
-      if (remoteId != null) 'remote_id': remoteId,
-      if (rowid != null) 'rowid': rowid,
-    });
-  }
-
-  BillsCompanion copyWith({
-    Value<String>? id,
-    Value<String>? title,
-    Value<int>? amountCents,
-    Value<DateTime>? dueDate,
-    Value<DateTime?>? paidAt,
-    Value<String?>? bankCardId,
-    Value<String?>? simCardId,
-    Value<String?>? notes,
-    Value<DateTime>? createdAt,
-    Value<DateTime>? updatedAt,
-    Value<DateTime?>? deletedAt,
-    Value<String>? syncStatus,
-    Value<String?>? remoteId,
-    Value<int>? rowid,
-  }) {
-    return BillsCompanion(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      amountCents: amountCents ?? this.amountCents,
-      dueDate: dueDate ?? this.dueDate,
-      paidAt: paidAt ?? this.paidAt,
-      bankCardId: bankCardId ?? this.bankCardId,
-      simCardId: simCardId ?? this.simCardId,
-      notes: notes ?? this.notes,
-      createdAt: createdAt ?? this.createdAt,
-      updatedAt: updatedAt ?? this.updatedAt,
-      deletedAt: deletedAt ?? this.deletedAt,
-      syncStatus: syncStatus ?? this.syncStatus,
-      remoteId: remoteId ?? this.remoteId,
-      rowid: rowid ?? this.rowid,
-    );
-  }
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    final map = <String, Expression>{};
-    if (id.present) {
-      map['id'] = Variable<String>(id.value);
-    }
-    if (title.present) {
-      map['title'] = Variable<String>(title.value);
-    }
-    if (amountCents.present) {
-      map['amount_cents'] = Variable<int>(amountCents.value);
-    }
-    if (dueDate.present) {
-      map['due_date'] = Variable<DateTime>(dueDate.value);
-    }
-    if (paidAt.present) {
-      map['paid_at'] = Variable<DateTime>(paidAt.value);
-    }
-    if (bankCardId.present) {
-      map['bank_card_id'] = Variable<String>(bankCardId.value);
-    }
-    if (simCardId.present) {
-      map['sim_card_id'] = Variable<String>(simCardId.value);
-    }
-    if (notes.present) {
-      map['notes'] = Variable<String>(notes.value);
-    }
-    if (createdAt.present) {
-      map['created_at'] = Variable<DateTime>(createdAt.value);
-    }
-    if (updatedAt.present) {
-      map['updated_at'] = Variable<DateTime>(updatedAt.value);
-    }
-    if (deletedAt.present) {
-      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
-    }
-    if (syncStatus.present) {
-      map['sync_status'] = Variable<String>(syncStatus.value);
-    }
-    if (remoteId.present) {
-      map['remote_id'] = Variable<String>(remoteId.value);
-    }
-    if (rowid.present) {
-      map['rowid'] = Variable<int>(rowid.value);
-    }
-    return map;
-  }
-
-  @override
-  String toString() {
-    return (StringBuffer('BillsCompanion(')
-          ..write('id: $id, ')
-          ..write('title: $title, ')
-          ..write('amountCents: $amountCents, ')
-          ..write('dueDate: $dueDate, ')
-          ..write('paidAt: $paidAt, ')
-          ..write('bankCardId: $bankCardId, ')
-          ..write('simCardId: $simCardId, ')
-          ..write('notes: $notes, ')
-          ..write('createdAt: $createdAt, ')
-          ..write('updatedAt: $updatedAt, ')
-          ..write('deletedAt: $deletedAt, ')
-          ..write('syncStatus: $syncStatus, ')
-          ..write('remoteId: $remoteId, ')
-          ..write('rowid: $rowid')
-          ..write(')'))
-        .toString();
-  }
-}
-
 class $RemindersTable extends Reminders
     with TableInfo<$RemindersTable, Reminder> {
   @override
@@ -2374,20 +1607,6 @@ class $RemindersTable extends Reminders
     false,
     type: DriftSqlType.dateTime,
     requiredDuringInsert: true,
-  );
-  static const VerificationMeta _relatedBillIdMeta = const VerificationMeta(
-    'relatedBillId',
-  );
-  @override
-  late final GeneratedColumn<String> relatedBillId = GeneratedColumn<String>(
-    'related_bill_id',
-    aliasedName,
-    true,
-    type: DriftSqlType.string,
-    requiredDuringInsert: false,
-    defaultConstraints: GeneratedColumn.constraintIsAlways(
-      'REFERENCES bills (id) ON DELETE SET NULL',
-    ),
   );
   static const VerificationMeta _notificationIdMeta = const VerificationMeta(
     'notificationId',
@@ -2477,7 +1696,6 @@ class $RemindersTable extends Reminders
     title,
     body,
     scheduledAt,
-    relatedBillId,
     notificationId,
     enabled,
     createdAt,
@@ -2527,15 +1745,6 @@ class $RemindersTable extends Reminders
       );
     } else if (isInserting) {
       context.missing(_scheduledAtMeta);
-    }
-    if (data.containsKey('related_bill_id')) {
-      context.handle(
-        _relatedBillIdMeta,
-        relatedBillId.isAcceptableOrUnknown(
-          data['related_bill_id']!,
-          _relatedBillIdMeta,
-        ),
-      );
     }
     if (data.containsKey('notification_id')) {
       context.handle(
@@ -2611,10 +1820,6 @@ class $RemindersTable extends Reminders
         DriftSqlType.dateTime,
         data['${effectivePrefix}scheduled_at'],
       )!,
-      relatedBillId: attachedDatabase.typeMapping.read(
-        DriftSqlType.string,
-        data['${effectivePrefix}related_bill_id'],
-      ),
       notificationId: attachedDatabase.typeMapping.read(
         DriftSqlType.int,
         data['${effectivePrefix}notification_id'],
@@ -2657,7 +1862,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
   final String title;
   final String? body;
   final DateTime scheduledAt;
-  final String? relatedBillId;
   final int? notificationId;
   final bool enabled;
   final DateTime createdAt;
@@ -2670,7 +1874,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     required this.title,
     this.body,
     required this.scheduledAt,
-    this.relatedBillId,
     this.notificationId,
     required this.enabled,
     required this.createdAt,
@@ -2688,9 +1891,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       map['body'] = Variable<String>(body);
     }
     map['scheduled_at'] = Variable<DateTime>(scheduledAt);
-    if (!nullToAbsent || relatedBillId != null) {
-      map['related_bill_id'] = Variable<String>(relatedBillId);
-    }
     if (!nullToAbsent || notificationId != null) {
       map['notification_id'] = Variable<int>(notificationId);
     }
@@ -2713,9 +1913,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       title: Value(title),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
       scheduledAt: Value(scheduledAt),
-      relatedBillId: relatedBillId == null && nullToAbsent
-          ? const Value.absent()
-          : Value(relatedBillId),
       notificationId: notificationId == null && nullToAbsent
           ? const Value.absent()
           : Value(notificationId),
@@ -2742,7 +1939,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       title: serializer.fromJson<String>(json['title']),
       body: serializer.fromJson<String?>(json['body']),
       scheduledAt: serializer.fromJson<DateTime>(json['scheduledAt']),
-      relatedBillId: serializer.fromJson<String?>(json['relatedBillId']),
       notificationId: serializer.fromJson<int?>(json['notificationId']),
       enabled: serializer.fromJson<bool>(json['enabled']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
@@ -2760,7 +1956,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       'title': serializer.toJson<String>(title),
       'body': serializer.toJson<String?>(body),
       'scheduledAt': serializer.toJson<DateTime>(scheduledAt),
-      'relatedBillId': serializer.toJson<String?>(relatedBillId),
       'notificationId': serializer.toJson<int?>(notificationId),
       'enabled': serializer.toJson<bool>(enabled),
       'createdAt': serializer.toJson<DateTime>(createdAt),
@@ -2776,7 +1971,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     String? title,
     Value<String?> body = const Value.absent(),
     DateTime? scheduledAt,
-    Value<String?> relatedBillId = const Value.absent(),
     Value<int?> notificationId = const Value.absent(),
     bool? enabled,
     DateTime? createdAt,
@@ -2789,9 +1983,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     title: title ?? this.title,
     body: body.present ? body.value : this.body,
     scheduledAt: scheduledAt ?? this.scheduledAt,
-    relatedBillId: relatedBillId.present
-        ? relatedBillId.value
-        : this.relatedBillId,
     notificationId: notificationId.present
         ? notificationId.value
         : this.notificationId,
@@ -2810,9 +2001,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
       scheduledAt: data.scheduledAt.present
           ? data.scheduledAt.value
           : this.scheduledAt,
-      relatedBillId: data.relatedBillId.present
-          ? data.relatedBillId.value
-          : this.relatedBillId,
       notificationId: data.notificationId.present
           ? data.notificationId.value
           : this.notificationId,
@@ -2834,7 +2022,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('scheduledAt: $scheduledAt, ')
-          ..write('relatedBillId: $relatedBillId, ')
           ..write('notificationId: $notificationId, ')
           ..write('enabled: $enabled, ')
           ..write('createdAt: $createdAt, ')
@@ -2852,7 +2039,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
     title,
     body,
     scheduledAt,
-    relatedBillId,
     notificationId,
     enabled,
     createdAt,
@@ -2869,7 +2055,6 @@ class Reminder extends DataClass implements Insertable<Reminder> {
           other.title == this.title &&
           other.body == this.body &&
           other.scheduledAt == this.scheduledAt &&
-          other.relatedBillId == this.relatedBillId &&
           other.notificationId == this.notificationId &&
           other.enabled == this.enabled &&
           other.createdAt == this.createdAt &&
@@ -2884,7 +2069,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   final Value<String> title;
   final Value<String?> body;
   final Value<DateTime> scheduledAt;
-  final Value<String?> relatedBillId;
   final Value<int?> notificationId;
   final Value<bool> enabled;
   final Value<DateTime> createdAt;
@@ -2898,7 +2082,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     this.title = const Value.absent(),
     this.body = const Value.absent(),
     this.scheduledAt = const Value.absent(),
-    this.relatedBillId = const Value.absent(),
     this.notificationId = const Value.absent(),
     this.enabled = const Value.absent(),
     this.createdAt = const Value.absent(),
@@ -2913,7 +2096,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     required String title,
     this.body = const Value.absent(),
     required DateTime scheduledAt,
-    this.relatedBillId = const Value.absent(),
     this.notificationId = const Value.absent(),
     this.enabled = const Value.absent(),
     required DateTime createdAt,
@@ -2932,7 +2114,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     Expression<String>? title,
     Expression<String>? body,
     Expression<DateTime>? scheduledAt,
-    Expression<String>? relatedBillId,
     Expression<int>? notificationId,
     Expression<bool>? enabled,
     Expression<DateTime>? createdAt,
@@ -2947,7 +2128,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
       if (title != null) 'title': title,
       if (body != null) 'body': body,
       if (scheduledAt != null) 'scheduled_at': scheduledAt,
-      if (relatedBillId != null) 'related_bill_id': relatedBillId,
       if (notificationId != null) 'notification_id': notificationId,
       if (enabled != null) 'enabled': enabled,
       if (createdAt != null) 'created_at': createdAt,
@@ -2964,7 +2144,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     Value<String>? title,
     Value<String?>? body,
     Value<DateTime>? scheduledAt,
-    Value<String?>? relatedBillId,
     Value<int?>? notificationId,
     Value<bool>? enabled,
     Value<DateTime>? createdAt,
@@ -2979,7 +2158,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
       title: title ?? this.title,
       body: body ?? this.body,
       scheduledAt: scheduledAt ?? this.scheduledAt,
-      relatedBillId: relatedBillId ?? this.relatedBillId,
       notificationId: notificationId ?? this.notificationId,
       enabled: enabled ?? this.enabled,
       createdAt: createdAt ?? this.createdAt,
@@ -3005,9 +2183,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
     }
     if (scheduledAt.present) {
       map['scheduled_at'] = Variable<DateTime>(scheduledAt.value);
-    }
-    if (relatedBillId.present) {
-      map['related_bill_id'] = Variable<String>(relatedBillId.value);
     }
     if (notificationId.present) {
       map['notification_id'] = Variable<int>(notificationId.value);
@@ -3043,7 +2218,6 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('scheduledAt: $scheduledAt, ')
-          ..write('relatedBillId: $relatedBillId, ')
           ..write('notificationId: $notificationId, ')
           ..write('enabled: $enabled, ')
           ..write('createdAt: $createdAt, ')
@@ -3935,13 +3109,11 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
   late final $SimCardsTable simCards = $SimCardsTable(this);
   late final $BankCardsTable bankCards = $BankCardsTable(this);
-  late final $BillsTable bills = $BillsTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final $SyncRecordsTable syncRecords = $SyncRecordsTable(this);
   late final SimCardsDao simCardsDao = SimCardsDao(this as AppDatabase);
   late final BankCardsDao bankCardsDao = BankCardsDao(this as AppDatabase);
-  late final BillsDao billsDao = BillsDao(this as AppDatabase);
   late final RemindersDao remindersDao = RemindersDao(this as AppDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
@@ -3950,35 +3122,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   List<DatabaseSchemaEntity> get allSchemaEntities => [
     simCards,
     bankCards,
-    bills,
     reminders,
     appSettings,
     syncRecords,
   ];
-  @override
-  StreamQueryUpdateRules get streamUpdateRules => const StreamQueryUpdateRules([
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'bank_cards',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('bills', kind: UpdateKind.update)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'sim_cards',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('bills', kind: UpdateKind.update)],
-    ),
-    WritePropagation(
-      on: TableUpdateQuery.onTableName(
-        'bills',
-        limitUpdateKind: UpdateKind.delete,
-      ),
-      result: [TableUpdate('reminders', kind: UpdateKind.update)],
-    ),
-  ]);
 }
 
 typedef $$SimCardsTableCreateCompanionBuilder =
@@ -4015,30 +3162,6 @@ typedef $$SimCardsTableUpdateCompanionBuilder =
       Value<String?> remoteId,
       Value<int> rowid,
     });
-
-final class $$SimCardsTableReferences
-    extends BaseReferences<_$AppDatabase, $SimCardsTable, SimCard> {
-  $$SimCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$BillsTable, List<Bill>> _billsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.bills,
-    aliasName: $_aliasNameGenerator(db.simCards.id, db.bills.simCardId),
-  );
-
-  $$BillsTableProcessedTableManager get billsRefs {
-    final manager = $$BillsTableTableManager(
-      $_db,
-      $_db.bills,
-    ).filter((f) => f.simCardId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_billsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
 
 class $$SimCardsTableFilterComposer
     extends Composer<_$AppDatabase, $SimCardsTable> {
@@ -4113,31 +3236,6 @@ class $$SimCardsTableFilterComposer
     column: $table.remoteId,
     builder: (column) => ColumnFilters(column),
   );
-
-  Expression<bool> billsRefs(
-    Expression<bool> Function($$BillsTableFilterComposer f) f,
-  ) {
-    final $$BillsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.simCardId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableFilterComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$SimCardsTableOrderingComposer
@@ -4274,31 +3372,6 @@ class $$SimCardsTableAnnotationComposer
 
   GeneratedColumn<String> get remoteId =>
       $composableBuilder(column: $table.remoteId, builder: (column) => column);
-
-  Expression<T> billsRefs<T extends Object>(
-    Expression<T> Function($$BillsTableAnnotationComposer a) f,
-  ) {
-    final $$BillsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.simCardId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$SimCardsTableTableManager
@@ -4312,9 +3385,9 @@ class $$SimCardsTableTableManager
           $$SimCardsTableAnnotationComposer,
           $$SimCardsTableCreateCompanionBuilder,
           $$SimCardsTableUpdateCompanionBuilder,
-          (SimCard, $$SimCardsTableReferences),
+          (SimCard, BaseReferences<_$AppDatabase, $SimCardsTable, SimCard>),
           SimCard,
-          PrefetchHooks Function({bool billsRefs})
+          PrefetchHooks Function()
         > {
   $$SimCardsTableTableManager(_$AppDatabase db, $SimCardsTable table)
     : super(
@@ -4392,35 +3465,9 @@ class $$SimCardsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$SimCardsTableReferences(db, table, e),
-                ),
-              )
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({billsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (billsRefs) db.bills],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (billsRefs)
-                    await $_getPrefetchedData<SimCard, $SimCardsTable, Bill>(
-                      currentTable: table,
-                      referencedTable: $$SimCardsTableReferences
-                          ._billsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$SimCardsTableReferences(db, table, p0).billsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.simCardId == item.id),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ),
       );
 }
@@ -4435,9 +3482,9 @@ typedef $$SimCardsTableProcessedTableManager =
       $$SimCardsTableAnnotationComposer,
       $$SimCardsTableCreateCompanionBuilder,
       $$SimCardsTableUpdateCompanionBuilder,
-      (SimCard, $$SimCardsTableReferences),
+      (SimCard, BaseReferences<_$AppDatabase, $SimCardsTable, SimCard>),
       SimCard,
-      PrefetchHooks Function({bool billsRefs})
+      PrefetchHooks Function()
     >;
 typedef $$BankCardsTableCreateCompanionBuilder =
     BankCardsCompanion Function({
@@ -4473,30 +3520,6 @@ typedef $$BankCardsTableUpdateCompanionBuilder =
       Value<String?> remoteId,
       Value<int> rowid,
     });
-
-final class $$BankCardsTableReferences
-    extends BaseReferences<_$AppDatabase, $BankCardsTable, BankCard> {
-  $$BankCardsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static MultiTypedResultKey<$BillsTable, List<Bill>> _billsRefsTable(
-    _$AppDatabase db,
-  ) => MultiTypedResultKey.fromTable(
-    db.bills,
-    aliasName: $_aliasNameGenerator(db.bankCards.id, db.bills.bankCardId),
-  );
-
-  $$BillsTableProcessedTableManager get billsRefs {
-    final manager = $$BillsTableTableManager(
-      $_db,
-      $_db.bills,
-    ).filter((f) => f.bankCardId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_billsRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
 
 class $$BankCardsTableFilterComposer
     extends Composer<_$AppDatabase, $BankCardsTable> {
@@ -4571,31 +3594,6 @@ class $$BankCardsTableFilterComposer
     column: $table.remoteId,
     builder: (column) => ColumnFilters(column),
   );
-
-  Expression<bool> billsRefs(
-    Expression<bool> Function($$BillsTableFilterComposer f) f,
-  ) {
-    final $$BillsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.bankCardId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableFilterComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$BankCardsTableOrderingComposer
@@ -4730,31 +3728,6 @@ class $$BankCardsTableAnnotationComposer
 
   GeneratedColumn<String> get remoteId =>
       $composableBuilder(column: $table.remoteId, builder: (column) => column);
-
-  Expression<T> billsRefs<T extends Object>(
-    Expression<T> Function($$BillsTableAnnotationComposer a) f,
-  ) {
-    final $$BillsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.bankCardId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
 }
 
 class $$BankCardsTableTableManager
@@ -4768,9 +3741,9 @@ class $$BankCardsTableTableManager
           $$BankCardsTableAnnotationComposer,
           $$BankCardsTableCreateCompanionBuilder,
           $$BankCardsTableUpdateCompanionBuilder,
-          (BankCard, $$BankCardsTableReferences),
+          (BankCard, BaseReferences<_$AppDatabase, $BankCardsTable, BankCard>),
           BankCard,
-          PrefetchHooks Function({bool billsRefs})
+          PrefetchHooks Function()
         > {
   $$BankCardsTableTableManager(_$AppDatabase db, $BankCardsTable table)
     : super(
@@ -4848,35 +3821,9 @@ class $$BankCardsTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$BankCardsTableReferences(db, table, e),
-                ),
-              )
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({billsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (billsRefs) db.bills],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (billsRefs)
-                    await $_getPrefetchedData<BankCard, $BankCardsTable, Bill>(
-                      currentTable: table,
-                      referencedTable: $$BankCardsTableReferences
-                          ._billsRefsTable(db),
-                      managerFromTypedResult: (p0) =>
-                          $$BankCardsTableReferences(db, table, p0).billsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.bankCardId == item.id),
-                      typedResults: items,
-                    ),
-                ];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ),
       );
 }
@@ -4891,660 +3838,9 @@ typedef $$BankCardsTableProcessedTableManager =
       $$BankCardsTableAnnotationComposer,
       $$BankCardsTableCreateCompanionBuilder,
       $$BankCardsTableUpdateCompanionBuilder,
-      (BankCard, $$BankCardsTableReferences),
+      (BankCard, BaseReferences<_$AppDatabase, $BankCardsTable, BankCard>),
       BankCard,
-      PrefetchHooks Function({bool billsRefs})
-    >;
-typedef $$BillsTableCreateCompanionBuilder =
-    BillsCompanion Function({
-      required String id,
-      required String title,
-      required int amountCents,
-      required DateTime dueDate,
-      Value<DateTime?> paidAt,
-      Value<String?> bankCardId,
-      Value<String?> simCardId,
-      Value<String?> notes,
-      required DateTime createdAt,
-      required DateTime updatedAt,
-      Value<DateTime?> deletedAt,
-      Value<String> syncStatus,
-      Value<String?> remoteId,
-      Value<int> rowid,
-    });
-typedef $$BillsTableUpdateCompanionBuilder =
-    BillsCompanion Function({
-      Value<String> id,
-      Value<String> title,
-      Value<int> amountCents,
-      Value<DateTime> dueDate,
-      Value<DateTime?> paidAt,
-      Value<String?> bankCardId,
-      Value<String?> simCardId,
-      Value<String?> notes,
-      Value<DateTime> createdAt,
-      Value<DateTime> updatedAt,
-      Value<DateTime?> deletedAt,
-      Value<String> syncStatus,
-      Value<String?> remoteId,
-      Value<int> rowid,
-    });
-
-final class $$BillsTableReferences
-    extends BaseReferences<_$AppDatabase, $BillsTable, Bill> {
-  $$BillsTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $BankCardsTable _bankCardIdTable(_$AppDatabase db) => db.bankCards
-      .createAlias($_aliasNameGenerator(db.bills.bankCardId, db.bankCards.id));
-
-  $$BankCardsTableProcessedTableManager? get bankCardId {
-    final $_column = $_itemColumn<String>('bank_card_id');
-    if ($_column == null) return null;
-    final manager = $$BankCardsTableTableManager(
-      $_db,
-      $_db.bankCards,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_bankCardIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static $SimCardsTable _simCardIdTable(_$AppDatabase db) => db.simCards
-      .createAlias($_aliasNameGenerator(db.bills.simCardId, db.simCards.id));
-
-  $$SimCardsTableProcessedTableManager? get simCardId {
-    final $_column = $_itemColumn<String>('sim_card_id');
-    if ($_column == null) return null;
-    final manager = $$SimCardsTableTableManager(
-      $_db,
-      $_db.simCards,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_simCardIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-
-  static MultiTypedResultKey<$RemindersTable, List<Reminder>>
-  _remindersRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
-    db.reminders,
-    aliasName: $_aliasNameGenerator(db.bills.id, db.reminders.relatedBillId),
-  );
-
-  $$RemindersTableProcessedTableManager get remindersRefs {
-    final manager = $$RemindersTableTableManager(
-      $_db,
-      $_db.reminders,
-    ).filter((f) => f.relatedBillId.id.sqlEquals($_itemColumn<String>('id')!));
-
-    final cache = $_typedResult.readTableOrNull(_remindersRefsTable($_db));
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: cache),
-    );
-  }
-}
-
-class $$BillsTableFilterComposer extends Composer<_$AppDatabase, $BillsTable> {
-  $$BillsTableFilterComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnFilters<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<int> get amountCents => $composableBuilder(
-    column: $table.amountCents,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get dueDate => $composableBuilder(
-    column: $table.dueDate,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get paidAt => $composableBuilder(
-    column: $table.paidAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get syncStatus => $composableBuilder(
-    column: $table.syncStatus,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  ColumnFilters<String> get remoteId => $composableBuilder(
-    column: $table.remoteId,
-    builder: (column) => ColumnFilters(column),
-  );
-
-  $$BankCardsTableFilterComposer get bankCardId {
-    final $$BankCardsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bankCardId,
-      referencedTable: $db.bankCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BankCardsTableFilterComposer(
-            $db: $db,
-            $table: $db.bankCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$SimCardsTableFilterComposer get simCardId {
-    final $$SimCardsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.simCardId,
-      referencedTable: $db.simCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SimCardsTableFilterComposer(
-            $db: $db,
-            $table: $db.simCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<bool> remindersRefs(
-    Expression<bool> Function($$RemindersTableFilterComposer f) f,
-  ) {
-    final $$RemindersTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.reminders,
-      getReferencedColumn: (t) => t.relatedBillId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$RemindersTableFilterComposer(
-            $db: $db,
-            $table: $db.reminders,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BillsTableOrderingComposer
-    extends Composer<_$AppDatabase, $BillsTable> {
-  $$BillsTableOrderingComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  ColumnOrderings<String> get id => $composableBuilder(
-    column: $table.id,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get title => $composableBuilder(
-    column: $table.title,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<int> get amountCents => $composableBuilder(
-    column: $table.amountCents,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
-    column: $table.dueDate,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get paidAt => $composableBuilder(
-    column: $table.paidAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get notes => $composableBuilder(
-    column: $table.notes,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
-    column: $table.createdAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
-    column: $table.updatedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
-    column: $table.deletedAt,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get syncStatus => $composableBuilder(
-    column: $table.syncStatus,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  ColumnOrderings<String> get remoteId => $composableBuilder(
-    column: $table.remoteId,
-    builder: (column) => ColumnOrderings(column),
-  );
-
-  $$BankCardsTableOrderingComposer get bankCardId {
-    final $$BankCardsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bankCardId,
-      referencedTable: $db.bankCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BankCardsTableOrderingComposer(
-            $db: $db,
-            $table: $db.bankCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$SimCardsTableOrderingComposer get simCardId {
-    final $$SimCardsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.simCardId,
-      referencedTable: $db.simCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SimCardsTableOrderingComposer(
-            $db: $db,
-            $table: $db.simCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-}
-
-class $$BillsTableAnnotationComposer
-    extends Composer<_$AppDatabase, $BillsTable> {
-  $$BillsTableAnnotationComposer({
-    required super.$db,
-    required super.$table,
-    super.joinBuilder,
-    super.$addJoinBuilderToRootComposer,
-    super.$removeJoinBuilderFromRootComposer,
-  });
-  GeneratedColumn<String> get id =>
-      $composableBuilder(column: $table.id, builder: (column) => column);
-
-  GeneratedColumn<String> get title =>
-      $composableBuilder(column: $table.title, builder: (column) => column);
-
-  GeneratedColumn<int> get amountCents => $composableBuilder(
-    column: $table.amountCents,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<DateTime> get dueDate =>
-      $composableBuilder(column: $table.dueDate, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get paidAt =>
-      $composableBuilder(column: $table.paidAt, builder: (column) => column);
-
-  GeneratedColumn<String> get notes =>
-      $composableBuilder(column: $table.notes, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get createdAt =>
-      $composableBuilder(column: $table.createdAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get updatedAt =>
-      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
-
-  GeneratedColumn<DateTime> get deletedAt =>
-      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
-
-  GeneratedColumn<String> get syncStatus => $composableBuilder(
-    column: $table.syncStatus,
-    builder: (column) => column,
-  );
-
-  GeneratedColumn<String> get remoteId =>
-      $composableBuilder(column: $table.remoteId, builder: (column) => column);
-
-  $$BankCardsTableAnnotationComposer get bankCardId {
-    final $$BankCardsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.bankCardId,
-      referencedTable: $db.bankCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BankCardsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bankCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  $$SimCardsTableAnnotationComposer get simCardId {
-    final $$SimCardsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.simCardId,
-      referencedTable: $db.simCards,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$SimCardsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.simCards,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
-
-  Expression<T> remindersRefs<T extends Object>(
-    Expression<T> Function($$RemindersTableAnnotationComposer a) f,
-  ) {
-    final $$RemindersTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.id,
-      referencedTable: $db.reminders,
-      getReferencedColumn: (t) => t.relatedBillId,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$RemindersTableAnnotationComposer(
-            $db: $db,
-            $table: $db.reminders,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return f(composer);
-  }
-}
-
-class $$BillsTableTableManager
-    extends
-        RootTableManager<
-          _$AppDatabase,
-          $BillsTable,
-          Bill,
-          $$BillsTableFilterComposer,
-          $$BillsTableOrderingComposer,
-          $$BillsTableAnnotationComposer,
-          $$BillsTableCreateCompanionBuilder,
-          $$BillsTableUpdateCompanionBuilder,
-          (Bill, $$BillsTableReferences),
-          Bill,
-          PrefetchHooks Function({
-            bool bankCardId,
-            bool simCardId,
-            bool remindersRefs,
-          })
-        > {
-  $$BillsTableTableManager(_$AppDatabase db, $BillsTable table)
-    : super(
-        TableManagerState(
-          db: db,
-          table: table,
-          createFilteringComposer: () =>
-              $$BillsTableFilterComposer($db: db, $table: table),
-          createOrderingComposer: () =>
-              $$BillsTableOrderingComposer($db: db, $table: table),
-          createComputedFieldComposer: () =>
-              $$BillsTableAnnotationComposer($db: db, $table: table),
-          updateCompanionCallback:
-              ({
-                Value<String> id = const Value.absent(),
-                Value<String> title = const Value.absent(),
-                Value<int> amountCents = const Value.absent(),
-                Value<DateTime> dueDate = const Value.absent(),
-                Value<DateTime?> paidAt = const Value.absent(),
-                Value<String?> bankCardId = const Value.absent(),
-                Value<String?> simCardId = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
-                Value<DateTime> createdAt = const Value.absent(),
-                Value<DateTime> updatedAt = const Value.absent(),
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<String> syncStatus = const Value.absent(),
-                Value<String?> remoteId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => BillsCompanion(
-                id: id,
-                title: title,
-                amountCents: amountCents,
-                dueDate: dueDate,
-                paidAt: paidAt,
-                bankCardId: bankCardId,
-                simCardId: simCardId,
-                notes: notes,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                syncStatus: syncStatus,
-                remoteId: remoteId,
-                rowid: rowid,
-              ),
-          createCompanionCallback:
-              ({
-                required String id,
-                required String title,
-                required int amountCents,
-                required DateTime dueDate,
-                Value<DateTime?> paidAt = const Value.absent(),
-                Value<String?> bankCardId = const Value.absent(),
-                Value<String?> simCardId = const Value.absent(),
-                Value<String?> notes = const Value.absent(),
-                required DateTime createdAt,
-                required DateTime updatedAt,
-                Value<DateTime?> deletedAt = const Value.absent(),
-                Value<String> syncStatus = const Value.absent(),
-                Value<String?> remoteId = const Value.absent(),
-                Value<int> rowid = const Value.absent(),
-              }) => BillsCompanion.insert(
-                id: id,
-                title: title,
-                amountCents: amountCents,
-                dueDate: dueDate,
-                paidAt: paidAt,
-                bankCardId: bankCardId,
-                simCardId: simCardId,
-                notes: notes,
-                createdAt: createdAt,
-                updatedAt: updatedAt,
-                deletedAt: deletedAt,
-                syncStatus: syncStatus,
-                remoteId: remoteId,
-                rowid: rowid,
-              ),
-          withReferenceMapper: (p0) => p0
-              .map(
-                (e) =>
-                    (e.readTable(table), $$BillsTableReferences(db, table, e)),
-              )
-              .toList(),
-          prefetchHooksCallback:
-              ({bankCardId = false, simCardId = false, remindersRefs = false}) {
-                return PrefetchHooks(
-                  db: db,
-                  explicitlyWatchedTables: [if (remindersRefs) db.reminders],
-                  addJoins:
-                      <
-                        T extends TableManagerState<
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic,
-                          dynamic
-                        >
-                      >(state) {
-                        if (bankCardId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.bankCardId,
-                                    referencedTable: $$BillsTableReferences
-                                        ._bankCardIdTable(db),
-                                    referencedColumn: $$BillsTableReferences
-                                        ._bankCardIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-                        if (simCardId) {
-                          state =
-                              state.withJoin(
-                                    currentTable: table,
-                                    currentColumn: table.simCardId,
-                                    referencedTable: $$BillsTableReferences
-                                        ._simCardIdTable(db),
-                                    referencedColumn: $$BillsTableReferences
-                                        ._simCardIdTable(db)
-                                        .id,
-                                  )
-                                  as T;
-                        }
-
-                        return state;
-                      },
-                  getPrefetchedDataCallback: (items) async {
-                    return [
-                      if (remindersRefs)
-                        await $_getPrefetchedData<Bill, $BillsTable, Reminder>(
-                          currentTable: table,
-                          referencedTable: $$BillsTableReferences
-                              ._remindersRefsTable(db),
-                          managerFromTypedResult: (p0) =>
-                              $$BillsTableReferences(
-                                db,
-                                table,
-                                p0,
-                              ).remindersRefs,
-                          referencedItemsForCurrentItem:
-                              (item, referencedItems) => referencedItems.where(
-                                (e) => e.relatedBillId == item.id,
-                              ),
-                          typedResults: items,
-                        ),
-                    ];
-                  },
-                );
-              },
-        ),
-      );
-}
-
-typedef $$BillsTableProcessedTableManager =
-    ProcessedTableManager<
-      _$AppDatabase,
-      $BillsTable,
-      Bill,
-      $$BillsTableFilterComposer,
-      $$BillsTableOrderingComposer,
-      $$BillsTableAnnotationComposer,
-      $$BillsTableCreateCompanionBuilder,
-      $$BillsTableUpdateCompanionBuilder,
-      (Bill, $$BillsTableReferences),
-      Bill,
-      PrefetchHooks Function({
-        bool bankCardId,
-        bool simCardId,
-        bool remindersRefs,
-      })
+      PrefetchHooks Function()
     >;
 typedef $$RemindersTableCreateCompanionBuilder =
     RemindersCompanion Function({
@@ -5552,7 +3848,6 @@ typedef $$RemindersTableCreateCompanionBuilder =
       required String title,
       Value<String?> body,
       required DateTime scheduledAt,
-      Value<String?> relatedBillId,
       Value<int?> notificationId,
       Value<bool> enabled,
       required DateTime createdAt,
@@ -5568,7 +3863,6 @@ typedef $$RemindersTableUpdateCompanionBuilder =
       Value<String> title,
       Value<String?> body,
       Value<DateTime> scheduledAt,
-      Value<String?> relatedBillId,
       Value<int?> notificationId,
       Value<bool> enabled,
       Value<DateTime> createdAt,
@@ -5578,30 +3872,6 @@ typedef $$RemindersTableUpdateCompanionBuilder =
       Value<String?> remoteId,
       Value<int> rowid,
     });
-
-final class $$RemindersTableReferences
-    extends BaseReferences<_$AppDatabase, $RemindersTable, Reminder> {
-  $$RemindersTableReferences(super.$_db, super.$_table, super.$_typedResult);
-
-  static $BillsTable _relatedBillIdTable(_$AppDatabase db) =>
-      db.bills.createAlias(
-        $_aliasNameGenerator(db.reminders.relatedBillId, db.bills.id),
-      );
-
-  $$BillsTableProcessedTableManager? get relatedBillId {
-    final $_column = $_itemColumn<String>('related_bill_id');
-    if ($_column == null) return null;
-    final manager = $$BillsTableTableManager(
-      $_db,
-      $_db.bills,
-    ).filter((f) => f.id.sqlEquals($_column));
-    final item = $_typedResult.readTableOrNull(_relatedBillIdTable($_db));
-    if (item == null) return manager;
-    return ProcessedTableManager(
-      manager.$state.copyWith(prefetchedData: [item]),
-    );
-  }
-}
 
 class $$RemindersTableFilterComposer
     extends Composer<_$AppDatabase, $RemindersTable> {
@@ -5666,29 +3936,6 @@ class $$RemindersTableFilterComposer
     column: $table.remoteId,
     builder: (column) => ColumnFilters(column),
   );
-
-  $$BillsTableFilterComposer get relatedBillId {
-    final $$BillsTableFilterComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.relatedBillId,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableFilterComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$RemindersTableOrderingComposer
@@ -5754,29 +4001,6 @@ class $$RemindersTableOrderingComposer
     column: $table.remoteId,
     builder: (column) => ColumnOrderings(column),
   );
-
-  $$BillsTableOrderingComposer get relatedBillId {
-    final $$BillsTableOrderingComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.relatedBillId,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableOrderingComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$RemindersTableAnnotationComposer
@@ -5826,29 +4050,6 @@ class $$RemindersTableAnnotationComposer
 
   GeneratedColumn<String> get remoteId =>
       $composableBuilder(column: $table.remoteId, builder: (column) => column);
-
-  $$BillsTableAnnotationComposer get relatedBillId {
-    final $$BillsTableAnnotationComposer composer = $composerBuilder(
-      composer: this,
-      getCurrentColumn: (t) => t.relatedBillId,
-      referencedTable: $db.bills,
-      getReferencedColumn: (t) => t.id,
-      builder:
-          (
-            joinBuilder, {
-            $addJoinBuilderToRootComposer,
-            $removeJoinBuilderFromRootComposer,
-          }) => $$BillsTableAnnotationComposer(
-            $db: $db,
-            $table: $db.bills,
-            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
-            joinBuilder: joinBuilder,
-            $removeJoinBuilderFromRootComposer:
-                $removeJoinBuilderFromRootComposer,
-          ),
-    );
-    return composer;
-  }
 }
 
 class $$RemindersTableTableManager
@@ -5862,9 +4063,9 @@ class $$RemindersTableTableManager
           $$RemindersTableAnnotationComposer,
           $$RemindersTableCreateCompanionBuilder,
           $$RemindersTableUpdateCompanionBuilder,
-          (Reminder, $$RemindersTableReferences),
+          (Reminder, BaseReferences<_$AppDatabase, $RemindersTable, Reminder>),
           Reminder,
-          PrefetchHooks Function({bool relatedBillId})
+          PrefetchHooks Function()
         > {
   $$RemindersTableTableManager(_$AppDatabase db, $RemindersTable table)
     : super(
@@ -5883,7 +4084,6 @@ class $$RemindersTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<String?> body = const Value.absent(),
                 Value<DateTime> scheduledAt = const Value.absent(),
-                Value<String?> relatedBillId = const Value.absent(),
                 Value<int?> notificationId = const Value.absent(),
                 Value<bool> enabled = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
@@ -5897,7 +4097,6 @@ class $$RemindersTableTableManager
                 title: title,
                 body: body,
                 scheduledAt: scheduledAt,
-                relatedBillId: relatedBillId,
                 notificationId: notificationId,
                 enabled: enabled,
                 createdAt: createdAt,
@@ -5913,7 +4112,6 @@ class $$RemindersTableTableManager
                 required String title,
                 Value<String?> body = const Value.absent(),
                 required DateTime scheduledAt,
-                Value<String?> relatedBillId = const Value.absent(),
                 Value<int?> notificationId = const Value.absent(),
                 Value<bool> enabled = const Value.absent(),
                 required DateTime createdAt,
@@ -5927,7 +4125,6 @@ class $$RemindersTableTableManager
                 title: title,
                 body: body,
                 scheduledAt: scheduledAt,
-                relatedBillId: relatedBillId,
                 notificationId: notificationId,
                 enabled: enabled,
                 createdAt: createdAt,
@@ -5938,54 +4135,9 @@ class $$RemindersTableTableManager
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0
-              .map(
-                (e) => (
-                  e.readTable(table),
-                  $$RemindersTableReferences(db, table, e),
-                ),
-              )
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
               .toList(),
-          prefetchHooksCallback: ({relatedBillId = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [],
-              addJoins:
-                  <
-                    T extends TableManagerState<
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic,
-                      dynamic
-                    >
-                  >(state) {
-                    if (relatedBillId) {
-                      state =
-                          state.withJoin(
-                                currentTable: table,
-                                currentColumn: table.relatedBillId,
-                                referencedTable: $$RemindersTableReferences
-                                    ._relatedBillIdTable(db),
-                                referencedColumn: $$RemindersTableReferences
-                                    ._relatedBillIdTable(db)
-                                    .id,
-                              )
-                              as T;
-                    }
-
-                    return state;
-                  },
-              getPrefetchedDataCallback: (items) async {
-                return [];
-              },
-            );
-          },
+          prefetchHooksCallback: null,
         ),
       );
 }
@@ -6000,9 +4152,9 @@ typedef $$RemindersTableProcessedTableManager =
       $$RemindersTableAnnotationComposer,
       $$RemindersTableCreateCompanionBuilder,
       $$RemindersTableUpdateCompanionBuilder,
-      (Reminder, $$RemindersTableReferences),
+      (Reminder, BaseReferences<_$AppDatabase, $RemindersTable, Reminder>),
       Reminder,
-      PrefetchHooks Function({bool relatedBillId})
+      PrefetchHooks Function()
     >;
 typedef $$AppSettingsTableCreateCompanionBuilder =
     AppSettingsCompanion Function({
@@ -6473,8 +4625,6 @@ class $AppDatabaseManager {
       $$SimCardsTableTableManager(_db, _db.simCards);
   $$BankCardsTableTableManager get bankCards =>
       $$BankCardsTableTableManager(_db, _db.bankCards);
-  $$BillsTableTableManager get bills =>
-      $$BillsTableTableManager(_db, _db.bills);
   $$RemindersTableTableManager get reminders =>
       $$RemindersTableTableManager(_db, _db.reminders);
   $$AppSettingsTableTableManager get appSettings =>

@@ -106,153 +106,48 @@ void main() {
     });
   });
 
-  group('bills', () {
-    test('rejects missing card and sim references', () async {
-      final createdAt = DateTime.utc(2026, 3, 1);
-
-      expect(
-        () => database.billsDao.create(
-          BillsCompanion.insert(
-            id: 'bill-1',
-            title: 'Phone bill',
-            amountCents: 4500,
-            dueDate: DateTime.utc(2026, 3, 15),
-            bankCardId: const Value('missing-bank'),
-            simCardId: const Value('missing-sim'),
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        ),
-        throwsA(isA<SqliteException>()),
-      );
-    });
-
-    test(
-      'inserts, links, updates, soft-deletes, and watches active rows',
-      () async {
-        final createdAt = DateTime.utc(2026, 3, 1);
-        final updatedAt = DateTime.utc(2026, 3, 2);
-
-        await database.simCardsDao.create(
-          SimCardsCompanion.insert(
-            id: 'sim-1',
-            carrierName: 'Mint Mobile',
-            phoneNumber: '5551234567',
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        );
-        await database.bankCardsDao.create(
-          BankCardsCompanion.insert(
-            id: 'bank-1',
-            bankName: 'Acme Bank',
-            lastFourDigits: '1234',
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        );
-
-        await database.billsDao.create(
-          BillsCompanion.insert(
-            id: 'bill-1',
-            title: 'Phone bill',
-            amountCents: 4500,
-            dueDate: DateTime.utc(2026, 3, 15),
-            bankCardId: const Value('bank-1'),
-            simCardId: const Value('sim-1'),
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        );
-
-        final activeBeforeDelete = await database.billsDao.watchActive().first;
-        expect(activeBeforeDelete, hasLength(1));
-        expect(activeBeforeDelete.single.bankCardId, 'bank-1');
-        expect(activeBeforeDelete.single.simCardId, 'sim-1');
-
-        await database.billsDao.updateRecord(
-          BillsCompanion(
-            id: const Value('bill-1'),
-            paidAt: Value(DateTime.utc(2026, 3, 10)),
-            updatedAt: Value(updatedAt),
-          ),
-        );
-
-        final updated = await database.billsDao.getById('bill-1');
-        expect(
-          updated?.paidAt?.isAtSameMomentAs(DateTime.utc(2026, 3, 10)),
-          isTrue,
-        );
-        expect(updated?.syncStatus, 'pending');
-
-        await database.billsDao.softDelete('bill-1', updatedAt);
-
-        expect(await database.billsDao.watchActive().first, isEmpty);
-        final deleted = await database.billsDao.getById('bill-1');
-        expect(deleted?.deletedAt?.isAtSameMomentAs(updatedAt), isTrue);
-        expect(deleted?.syncStatus, 'pending');
-      },
-    );
-  });
-
   group('reminders', () {
-    test(
-      'inserts, links, updates, soft-deletes, and watches active rows',
-      () async {
-        final createdAt = DateTime.utc(2026, 4, 1);
-        final updatedAt = DateTime.utc(2026, 4, 2);
+    test('inserts, updates, soft-deletes, and watches active rows', () async {
+      final createdAt = DateTime.utc(2026, 4, 1);
+      final updatedAt = DateTime.utc(2026, 4, 2);
 
-        await database.billsDao.create(
-          BillsCompanion.insert(
-            id: 'bill-1',
-            title: 'Phone bill',
-            amountCents: 4500,
-            dueDate: DateTime.utc(2026, 4, 15),
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        );
+      await database.remindersDao.create(
+        RemindersCompanion.insert(
+          id: 'reminder-1',
+          title: 'Pay phone bill',
+          scheduledAt: DateTime.utc(2026, 4, 14, 9),
+          createdAt: createdAt,
+          updatedAt: createdAt,
+        ),
+      );
 
-        await database.remindersDao.create(
-          RemindersCompanion.insert(
-            id: 'reminder-1',
-            title: 'Pay phone bill',
-            scheduledAt: DateTime.utc(2026, 4, 14, 9),
-            relatedBillId: const Value('bill-1'),
-            createdAt: createdAt,
-            updatedAt: createdAt,
-          ),
-        );
+      final activeBeforeDelete = await database.remindersDao
+          .watchActive()
+          .first;
+      expect(activeBeforeDelete, hasLength(1));
+      expect(activeBeforeDelete.single.enabled, isTrue);
 
-        final activeBeforeDelete = await database.remindersDao
-            .watchActive()
-            .first;
-        expect(activeBeforeDelete, hasLength(1));
-        expect(activeBeforeDelete.single.relatedBillId, 'bill-1');
-        expect(activeBeforeDelete.single.enabled, isTrue);
+      await database.remindersDao.updateRecord(
+        RemindersCompanion(
+          id: const Value('reminder-1'),
+          enabled: const Value(false),
+          notificationId: const Value(42),
+          updatedAt: Value(updatedAt),
+        ),
+      );
 
-        await database.remindersDao.updateRecord(
-          RemindersCompanion(
-            id: const Value('reminder-1'),
-            enabled: const Value(false),
-            notificationId: const Value(42),
-            updatedAt: Value(updatedAt),
-          ),
-        );
+      final updated = await database.remindersDao.getById('reminder-1');
+      expect(updated?.enabled, isFalse);
+      expect(updated?.notificationId, 42);
+      expect(updated?.syncStatus, 'pending');
 
-        final updated = await database.remindersDao.getById('reminder-1');
-        expect(updated?.enabled, isFalse);
-        expect(updated?.notificationId, 42);
-        expect(updated?.syncStatus, 'pending');
+      await database.remindersDao.softDelete('reminder-1', updatedAt);
 
-        await database.remindersDao.softDelete('reminder-1', updatedAt);
-
-        expect(await database.remindersDao.watchActive().first, isEmpty);
-        final deleted = await database.remindersDao.getById('reminder-1');
-        expect(deleted?.deletedAt?.isAtSameMomentAs(updatedAt), isTrue);
-        expect(deleted?.syncStatus, 'pending');
-      },
-    );
+      expect(await database.remindersDao.watchActive().first, isEmpty);
+      final deleted = await database.remindersDao.getById('reminder-1');
+      expect(deleted?.deletedAt?.isAtSameMomentAs(updatedAt), isTrue);
+      expect(deleted?.syncStatus, 'pending');
+    });
   });
 
   group('settings and sync records', () {
@@ -303,7 +198,6 @@ void main() {
     expect(container.read(databaseProvider), same(database));
     expect(container.read(simCardsDaoProvider), same(database.simCardsDao));
     expect(container.read(bankCardsDaoProvider), same(database.bankCardsDao));
-    expect(container.read(billsDaoProvider), same(database.billsDao));
     expect(container.read(remindersDaoProvider), same(database.remindersDao));
   });
 }

@@ -1,12 +1,10 @@
 import 'dart:io';
 
 import 'package:cardfan/core/database/daos/bank_cards_dao.dart';
-import 'package:cardfan/core/database/daos/bills_dao.dart';
 import 'package:cardfan/core/database/daos/reminders_dao.dart';
 import 'package:cardfan/core/database/daos/sim_cards_dao.dart';
 import 'package:cardfan/core/database/tables/app_settings.dart';
 import 'package:cardfan/core/database/tables/bank_cards.dart';
-import 'package:cardfan/core/database/tables/bills.dart';
 import 'package:cardfan/core/database/tables/reminders.dart';
 import 'package:cardfan/core/database/tables/sim_cards.dart';
 import 'package:cardfan/core/database/tables/sync_records.dart';
@@ -18,8 +16,8 @@ import 'package:path_provider/path_provider.dart';
 part 'app_database.g.dart';
 
 @DriftDatabase(
-  tables: [SimCards, BankCards, Bills, Reminders, AppSettings, SyncRecords],
-  daos: [SimCardsDao, BankCardsDao, BillsDao, RemindersDao],
+  tables: [SimCards, BankCards, Reminders, AppSettings, SyncRecords],
+  daos: [SimCardsDao, BankCardsDao, RemindersDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());

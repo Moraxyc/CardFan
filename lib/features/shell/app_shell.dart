@@ -30,11 +30,6 @@ class AppShell extends StatelessWidget {
             label: '银行卡',
           ),
           NavigationDestination(
-            icon: Icon(Icons.receipt_long_outlined),
-            selectedIcon: Icon(Icons.receipt_long),
-            label: '账单',
-          ),
-          NavigationDestination(
             icon: Icon(Icons.notifications_outlined),
             selectedIcon: Icon(Icons.notifications),
             label: '提醒',

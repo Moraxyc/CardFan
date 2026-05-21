@@ -1,5 +1,4 @@
 import 'package:cardfan/core/database/daos/bank_cards_dao.dart';
-import 'package:cardfan/core/database/daos/bills_dao.dart';
 import 'package:cardfan/core/database/daos/reminders_dao.dart';
 import 'package:cardfan/core/database/daos/sim_cards_dao.dart';
 import 'package:cardfan/core/database/app_database.dart';
@@ -17,10 +16,6 @@ final simCardsDaoProvider = Provider<SimCardsDao>((ref) {
 
 final bankCardsDaoProvider = Provider<BankCardsDao>((ref) {
   return ref.watch(databaseProvider).bankCardsDao;
-});
-
-final billsDaoProvider = Provider<BillsDao>((ref) {
-  return ref.watch(databaseProvider).billsDao;
 });
 
 final remindersDaoProvider = Provider<RemindersDao>((ref) {
