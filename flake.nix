@@ -2,10 +2,10 @@
   description = "CardFan";
 
   inputs = {
-    nixpkgs.url = "git+https://github.com/nixos/nixpkgs.git?ref=nixpkgs-unstable&shallow=1";
-    systems.url = "git+https://github.com/nix-systems/default.git?shallow=1";
+    nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
+    systems.url = "github:nix-systems/default";
     flake-parts = {
-      url = "git+https://github.com/hercules-ci/flake-parts.git?ref=main&shallow=1";
+      url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
     };
   };
