@@ -11,7 +11,6 @@ import 'package:cardfan/core/database/tables/reminders.dart';
 import 'package:cardfan/core/database/tables/sim_cards.dart';
 import 'package:cardfan/core/database/tables/sync_records.dart';
 import 'package:drift/drift.dart';
-import 'package:drift_flutter/drift_flutter.dart';
 import 'package:drift/native.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';

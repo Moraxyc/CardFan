@@ -9,9 +9,7 @@ class RemindersPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('提醒'),
-      ),
+      appBar: AppBar(title: const Text('提醒')),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 12),
         children: const [

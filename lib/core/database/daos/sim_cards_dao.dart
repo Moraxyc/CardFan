@@ -17,6 +17,9 @@ class SimCardsDao extends DatabaseAccessor<AppDatabase>
   Stream<List<SimCard>> watchActive() =>
       (select(simCards)..where((row) => row.deletedAt.isNull())).watch();
 
+  Future<List<SimCard>> getActive() =>
+      (select(simCards)..where((row) => row.deletedAt.isNull())).get();
+
   Future<void> updateRecord(SimCardsCompanion entry) {
     final id = entry.id.value;
     return (update(simCards)..where((row) => row.id.equals(id))).write(

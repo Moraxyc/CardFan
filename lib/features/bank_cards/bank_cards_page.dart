@@ -9,9 +9,7 @@ class BankCardsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('银行卡'),
-      ),
+      appBar: AppBar(title: const Text('银行卡')),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 12),
         children: const [

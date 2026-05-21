@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum StatusLevel {
-  normal,
-  warning,
-  danger,
-}
+enum StatusLevel { normal, warning, danger }
 
 class StatusCard extends StatelessWidget {
   const StatusCard({
@@ -39,10 +35,7 @@ class StatusCard extends StatelessWidget {
           children: [
             CircleAvatar(
               backgroundColor: statusColor.withValues(alpha: 0.12),
-              child: Icon(
-                icon ?? Icons.event,
-                color: statusColor,
-              ),
+              child: Icon(icon ?? Icons.event, color: statusColor),
             ),
             const SizedBox(width: 16),
             Expanded(
@@ -52,15 +45,15 @@ class StatusCard extends StatelessWidget {
                   Text(
                     title,
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     subtitle,
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurfaceVariant,
-                        ),
+                      color: colorScheme.onSurfaceVariant,
+                    ),
                   ),
                 ],
               ),

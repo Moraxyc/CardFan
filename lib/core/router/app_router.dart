@@ -7,12 +7,25 @@ import '../../features/dashboard/dashboard_page.dart';
 import '../../features/reminders/reminders_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/shell/app_shell.dart';
+import '../../features/sim_cards/sim_card_form_page.dart';
 import '../../features/sim_cards/sim_cards_page.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
     initialLocation: '/',
     routes: [
+      GoRoute(
+        path: '/sim-cards/new',
+        name: 'newSimCard',
+        builder: (context, state) => const SimCardFormPage(),
+      ),
+      GoRoute(
+        path: '/sim-cards/:id/edit',
+        name: 'editSimCard',
+        builder: (context, state) {
+          return SimCardFormPage(simCardId: state.pathParameters['id']);
+        },
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppShell(navigationShell: navigationShell);
