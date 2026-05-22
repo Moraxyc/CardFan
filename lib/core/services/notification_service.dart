@@ -101,7 +101,7 @@ class LocalNotificationService implements NotificationService {
       appUserModelId: 'CardFan.CardFan',
       guid: '1df994a0-7c6b-4c16-9151-f3b1e5724d38',
     );
-    const linux = LinuxInitializationSettings(defaultActionName: '打开');
+    const linux = LinuxInitializationSettings(defaultActionName: 'Open');
     final initialized = await _plugin.initialize(
       settings: const InitializationSettings(
         android: android,

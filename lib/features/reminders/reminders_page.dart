@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/generated/app_localizations.dart';
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
 import 'reminder_date_formatter.dart';
@@ -12,13 +13,14 @@ class RemindersPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reminders = ref.watch(_activeRemindersProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('提醒')),
+      appBar: AppBar(title: Text(l10n.remindersTitle)),
       body: reminders.when(
         data: (items) {
           if (items.isEmpty) {
-            return const _EmptyRemindersView();
+            return _EmptyRemindersView(l10n: l10n);
           }
 
           return ListView.separated(
@@ -31,7 +33,9 @@ class RemindersPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('加载提醒失败：$error')),
+        error: (error, stackTrace) => Center(
+          child: Text(l10n.remindersLoadError(error: error.toString())),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'remindersAddFab',
@@ -47,7 +51,9 @@ final _activeRemindersProvider = StreamProvider<List<Reminder>>((ref) {
 });
 
 class _EmptyRemindersView extends StatelessWidget {
-  const _EmptyRemindersView();
+  const _EmptyRemindersView({required this.l10n});
+
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +70,14 @@ class _EmptyRemindersView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '还没有提醒',
+              l10n.remindersEmptyTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
-              '添加一个提醒',
+              l10n.remindersEmptySubtitle,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -91,11 +97,12 @@ class _ReminderListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final details = [
       formatReminderDate(reminder.scheduledAt),
       if (reminder.body != null && reminder.body!.isNotEmpty) reminder.body!,
-      reminder.enabled ? '已开启' : '已关闭',
-    ].join(' · ');
+      reminder.enabled ? l10n.reminderEnabled : l10n.reminderDisabled,
+    ].join(l10n.commonDetailSeparator);
 
     return Card(
       child: ListTile(
