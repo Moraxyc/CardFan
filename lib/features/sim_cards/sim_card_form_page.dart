@@ -205,8 +205,7 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
       return '月费最多支持 2 位小数';
     }
 
-    final cents = _parseMonthlyFeeCents(trimmed);
-    if (cents == null || cents < 0) {
+    if (_parseMonthlyFeeCents(trimmed) == null) {
       return '请输入有效月费';
     }
 
