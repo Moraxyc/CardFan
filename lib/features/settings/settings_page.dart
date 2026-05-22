@@ -12,22 +12,22 @@ class SettingsPage extends StatelessWidget {
         children: [
           Card(
             child: Column(
-              children: const [
-                ListTile(
+              children: [
+                const ListTile(
                   leading: Icon(Icons.dark_mode_outlined),
                   title: Text('主题模式'),
                   subtitle: Text('当前跟随系统'),
                   trailing: Icon(Icons.chevron_right),
                 ),
-                Divider(height: 1),
-                ListTile(
+                const Divider(height: 1),
+                const ListTile(
                   leading: Icon(Icons.lock_outline),
                   title: Text('本地认证'),
                   subtitle: Text('后续支持指纹 / Face ID'),
                   trailing: Icon(Icons.chevron_right),
                 ),
-                Divider(height: 1),
-                ListTile(
+                const Divider(height: 1),
+                const ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('关于应用'),
                   subtitle: Text('Phase 1 工程壳版本'),

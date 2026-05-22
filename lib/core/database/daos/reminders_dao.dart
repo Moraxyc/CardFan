@@ -18,6 +18,9 @@ class RemindersDao extends DatabaseAccessor<AppDatabase>
   Stream<List<Reminder>> watchActive() =>
       (select(reminders)..where((row) => row.deletedAt.isNull())).watch();
 
+  Future<List<Reminder>> getActive() =>
+      (select(reminders)..where((row) => row.deletedAt.isNull())).get();
+
   Future<void> updateRecord(RemindersCompanion entry) {
     final id = entry.id.value;
     return (update(reminders)..where((row) => row.id.equals(id))).write(

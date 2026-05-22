@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../features/bank_cards/bank_card_form_page.dart';
 import '../../features/bank_cards/bank_cards_page.dart';
 import '../../features/dashboard/dashboard_page.dart';
+import '../../features/reminders/reminder_form_page.dart';
 import '../../features/reminders/reminders_page.dart';
 import '../../features/settings/settings_page.dart';
 import '../../features/shell/app_shell.dart';
@@ -36,6 +37,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: 'editBankCard',
         builder: (context, state) {
           return BankCardFormPage(bankCardId: state.pathParameters['id']);
+        },
+      ),
+      GoRoute(
+        path: '/reminders/new',
+        name: 'newReminder',
+        builder: (context, state) => const ReminderFormPage(),
+      ),
+      GoRoute(
+        path: '/reminders/:id/edit',
+        name: 'editReminder',
+        builder: (context, state) {
+          return ReminderFormPage(reminderId: state.pathParameters['id']);
         },
       ),
       StatefulShellRoute.indexedStack(
