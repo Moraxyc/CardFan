@@ -35,8 +35,6 @@
             GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
             GRADLE_USER_HOME = ".gradle";
 
-            CMAKE_INSTALL_PREFIX = "build/linux/x64/debug/bundle";
-
             LD_LIBRARY_PATH =
               with pkgs;
               toString (

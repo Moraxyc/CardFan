@@ -102,16 +102,46 @@ void main() {
   });
 
   test(
-    'does not report permissions granted on unsupported platforms',
+    'reports Linux notification support without offline scheduling support',
     () async {
       debugDefaultTargetPlatformOverride = TargetPlatform.linux;
       final service = LocalNotificationService();
 
       final result = await service.requestPermissions();
 
-      expect(result, isFalse);
+      expect(service.supportsNotifications, isTrue);
+      expect(service.supportsOfflineScheduling, isFalse);
+      expect(result, isTrue);
     },
   );
+
+  test('initializes Linux notifications for runtime use', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+    final service = LocalNotificationService();
+
+    final result = await service.initialize();
+
+    expect(result, isTrue);
+  });
+
+  test('schedule is a no-op but cancel still initializes on Linux', () async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+    final service = LocalNotificationService();
+
+    await service.schedule(
+      id: 1,
+      title: 'Pay rent',
+      body: 'Before 6pm',
+      scheduledAt: DateTime(2026, 5, 23, 10),
+    );
+    await service.cancel(1);
+
+    final methodNames = calls.map((call) => call.method).toList();
+
+    expect(methodNames, isNot(contains('zonedSchedule')));
+    expect(methodNames, contains('initialize'));
+    expect(methodNames, contains('cancel'));
+  });
 
   test('Android manifest declares scheduled notification components', () {
     final manifest = File(

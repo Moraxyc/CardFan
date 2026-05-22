@@ -72,6 +72,7 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final notificationService = ref.watch(notificationServiceProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text(_isEditing ? '编辑提醒' : '新增提醒'),
@@ -86,6 +87,25 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          if (!notificationService.supportsNotifications) ...[
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('当前平台不支持通知提醒'),
+                subtitle: Text('此平台无法发送本地通知。'),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ] else if (!notificationService.supportsOfflineScheduling) ...[
+            const Card(
+              child: ListTile(
+                leading: Icon(Icons.info_outline),
+                title: Text('当前平台不支持关闭应用后的通知提醒'),
+                subtitle: Text('应用运行时仍会尽量发送本地通知。'),
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
           Form(
             key: _formKey,
             child: Column(
@@ -213,6 +233,7 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
     setState(() => _saving = true);
     final dao = ref.read(remindersDaoProvider);
     final scheduler = ref.read(notificationSchedulerProvider);
+    final notificationService = ref.read(notificationServiceProvider);
     final now = DateTime.now().toUtc();
     final id = _existing?.id ?? 'rem-${DateTime.now().microsecondsSinceEpoch}';
     final previousNotificationId = _existing?.notificationId;
@@ -236,6 +257,8 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
         previousNotificationId: previousNotificationId,
       );
       final enabled = _enabled && notificationId != null;
+      final offlineSchedulingUnsupported =
+          enabled && !notificationService.supportsOfflineScheduling;
 
       if (_existing == null) {
         await dao.create(
@@ -264,7 +287,14 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
         );
       }
 
-      if (mounted) context.pop();
+      if (mounted) {
+        if (offlineSchedulingUnsupported) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('已保存；关闭应用后不会触发通知')));
+        }
+        context.pop();
+      }
     } finally {
       if (mounted) setState(() => _saving = false);
     }

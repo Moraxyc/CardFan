@@ -2,8 +2,13 @@ import 'package:cardfan/core/services/notification_service.dart';
 
 class FakeNotificationService implements NotificationService {
   final scheduled = <ScheduledNotification>[];
+  final shown = <ShownNotification>[];
   final cancelled = <int>[];
   bool permissionsGranted = true;
+  @override
+  bool supportsNotifications = true;
+  @override
+  bool supportsOfflineScheduling = true;
   int permissionRequests = 0;
 
   @override
@@ -33,9 +38,41 @@ class FakeNotificationService implements NotificationService {
   }
 
   @override
+  Future<void> show({
+    required int id,
+    required String title,
+    required String body,
+  }) async {
+    shown.add(ShownNotification(id: id, title: title, body: body));
+  }
+
+  @override
   Future<void> cancel(int id) async {
     cancelled.add(id);
   }
+}
+
+class ShownNotification {
+  const ShownNotification({
+    required this.id,
+    required this.title,
+    required this.body,
+  });
+
+  final int id;
+  final String title;
+  final String body;
+
+  @override
+  bool operator ==(Object other) {
+    return other is ShownNotification &&
+        other.id == id &&
+        other.title == title &&
+        other.body == body;
+  }
+
+  @override
+  int get hashCode => Object.hash(id, title, body);
 }
 
 class ScheduledNotification {

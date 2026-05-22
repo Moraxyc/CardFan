@@ -5,6 +5,7 @@ import 'package:cardfan/core/providers/notification_provider.dart';
 import 'package:drift/drift.dart' show Value;
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -65,6 +66,62 @@ void main() {
     expect(find.byKey(const Key('reminderTitleField')), findsOneWidget);
 
     await disposeApp(tester);
+  });
+
+  testWidgets('opens form with offline scheduling warning on Linux', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+    try {
+      notificationService.supportsOfflineScheduling = false;
+
+      await pumpRemindersPage(tester);
+
+      await tester.tap(find.byIcon(Icons.add));
+      await pumpRoute(tester);
+
+      expect(find.text('新增提醒'), findsOneWidget);
+      expect(find.text('当前平台不支持关闭应用后的通知提醒'), findsOneWidget);
+
+      await disposeApp(tester);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
+  });
+
+  testWidgets('keeps reminder enabled when offline scheduling is unsupported', (
+    tester,
+  ) async {
+    debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+    try {
+      notificationService.supportsOfflineScheduling = false;
+
+      await openAddForm(tester);
+
+      await tester.enterText(
+        find.byKey(const Key('reminderTitleField')),
+        '桌面提醒',
+      );
+      await tester.tap(find.byKey(const Key('scheduledAtField')));
+      await pumpRoute(tester);
+      await tester.tap(find.text('确定'));
+      await pumpRoute(tester);
+      await tester.tap(find.text('确定'));
+      await pumpRoute(tester);
+      await tester.tap(find.text('保存'));
+      await pumpRoute(tester);
+
+      final reminders = await database.remindersDao.getActive();
+      expect(reminders, hasLength(1));
+      expect(reminders.single.enabled, isTrue);
+      expect(reminders.single.notificationId, isNotNull);
+      expect(notificationService.permissionRequests, 1);
+      expect(notificationService.scheduled, isEmpty);
+
+      await disposeApp(tester);
+    } finally {
+      debugDefaultTargetPlatformOverride = null;
+    }
   });
 
   testWidgets('validates reminder title and scheduled time', (tester) async {
