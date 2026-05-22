@@ -51,14 +51,16 @@ class AppDatabase extends _$AppDatabase {
       throw ArgumentError.value(entry, 'entry', 'Sync record id is required');
     }
 
-    // Update first so partial companions don't need insert-only required fields.
-    final updatedRows = await (update(
-      syncRecords,
-    )..where((row) => row.id.equals(entry.id.value))).write(entry);
+    await transaction(() async {
+      // Update first so partial companions don't need insert-only required fields.
+      final updatedRows = await (update(
+        syncRecords,
+      )..where((row) => row.id.equals(entry.id.value))).write(entry);
 
-    if (updatedRows == 0) {
-      await into(syncRecords).insert(entry);
-    }
+      if (updatedRows == 0) {
+        await into(syncRecords).insert(entry);
+      }
+    });
   }
 
   Future<SyncRecord?> syncRecordById(String id) {
