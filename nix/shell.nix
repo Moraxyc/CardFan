@@ -1,6 +1,11 @@
 {
   perSystem =
-    { lib, pkgs, ... }:
+    {
+      lib,
+      pkgs,
+      config,
+      ...
+    }:
     {
       devShells.default =
         let
@@ -42,10 +47,14 @@
                 ]
               );
           };
-          nativeBuildInputs = with pkgs; [
-            pkg-config
-            ninja
-          ];
+          inherit (config.pre-commit.settings) shellHook;
+          nativeBuildInputs =
+            with pkgs;
+            [
+              pkg-config
+              ninja
+            ]
+            ++ config.pre-commit.settings.enabledPackages;
           buildInputs =
             with pkgs;
             [
