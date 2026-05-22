@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../shared/utils.dart';
 import 'phone_number_format.dart';
 
 class SimCardFormPage extends ConsumerStatefulWidget {
@@ -204,8 +205,7 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
       return '月费最多支持 2 位小数';
     }
 
-    final cents = _parseMonthlyFeeCents(trimmed);
-    if (cents == null || cents < 0) {
+    if (_parseMonthlyFeeCents(trimmed) == null) {
       return '请输入有效月费';
     }
 
@@ -233,10 +233,10 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
             phoneNumber: normalizePhoneNumberToE164(
               _phoneNumberController.text,
             )!,
-            planName: Value(_blankToNull(_planNameController.text)),
+            planName: Value(blankToNull(_planNameController.text)),
             monthlyFeeCents: Value(monthlyFeeCents),
             billingDay: Value(billingDay),
-            notes: Value(_blankToNull(_notesController.text)),
+            notes: Value(blankToNull(_notesController.text)),
             createdAt: now,
             updatedAt: now,
           ),
@@ -249,10 +249,10 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
             phoneNumber: Value(
               normalizePhoneNumberToE164(_phoneNumberController.text)!,
             ),
-            planName: Value(_blankToNull(_planNameController.text)),
+            planName: Value(blankToNull(_planNameController.text)),
             monthlyFeeCents: Value(monthlyFeeCents),
             billingDay: Value(billingDay),
-            notes: Value(_blankToNull(_notesController.text)),
+            notes: Value(blankToNull(_notesController.text)),
             updatedAt: Value(now),
           ),
         );
@@ -318,11 +318,6 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
       return null;
     }
     return int.parse(trimmed);
-  }
-
-  String? _blankToNull(String value) {
-    final trimmed = value.trim();
-    return trimmed.isEmpty ? null : trimmed;
   }
 
   String _newId() {

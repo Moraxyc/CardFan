@@ -47,18 +47,7 @@ class AppDatabase extends _$AppDatabase {
   }
 
   Future<void> upsertSyncRecord(SyncRecordsCompanion entry) {
-    final id = entry.id.value;
-    return transaction(() async {
-      final existing = await syncRecordById(id);
-      if (existing == null) {
-        await into(syncRecords).insert(entry);
-        return;
-      }
-
-      await (update(
-        syncRecords,
-      )..where((row) => row.id.equals(id))).write(entry);
-    });
+    return into(syncRecords).insertOnConflictUpdate(entry);
   }
 
   Future<SyncRecord?> syncRecordById(String id) {

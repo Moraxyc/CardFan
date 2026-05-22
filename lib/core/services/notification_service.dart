@@ -33,10 +33,15 @@ class LocalNotificationService implements NotificationService {
   LocalNotificationService({FlutterLocalNotificationsPlugin? plugin})
     : _plugin = plugin ?? FlutterLocalNotificationsPlugin();
 
+  static const _channelId = 'cardfan_reminders';
+  static const _channelName = 'CardFan Reminders';
+  static const _channelDescription =
+      'Reminder notifications scheduled by CardFan.';
+
   static const _channel = AndroidNotificationChannel(
-    'cardfan_reminders',
-    'CardFan Reminders',
-    description: 'Reminder notifications scheduled by CardFan.',
+    _channelId,
+    _channelName,
+    description: _channelDescription,
     importance: Importance.high,
   );
 
@@ -208,9 +213,9 @@ class LocalNotificationService implements NotificationService {
       scheduledDate: tz.TZDateTime.from(scheduledAt.toLocal(), tz.local),
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
-          'cardfan_reminders',
-          'CardFan Reminders',
-          channelDescription: 'Reminder notifications scheduled by CardFan.',
+          _channelId,
+          _channelName,
+          channelDescription: _channelDescription,
           importance: Importance.high,
           priority: Priority.high,
         ),
@@ -239,9 +244,9 @@ class LocalNotificationService implements NotificationService {
       body: body,
       notificationDetails: const NotificationDetails(
         android: AndroidNotificationDetails(
-          'cardfan_reminders',
-          'CardFan Reminders',
-          channelDescription: 'Reminder notifications scheduled by CardFan.',
+          _channelId,
+          _channelName,
+          channelDescription: _channelDescription,
           importance: Importance.high,
           priority: Priority.high,
         ),

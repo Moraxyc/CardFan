@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/notification_provider.dart';
+import '../../shared/utils.dart';
 import 'reminder_date_formatter.dart';
 
 class ReminderFormPage extends ConsumerStatefulWidget {
@@ -242,7 +243,7 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
       final reminder = Reminder(
         id: id,
         title: _titleController.text.trim(),
-        body: _blankToNull(_bodyController.text),
+        body: blankToNull(_bodyController.text),
         scheduledAt: _scheduledAt!,
         notificationId: previousNotificationId,
         enabled: _enabled,
@@ -330,10 +331,5 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
         .read(remindersDaoProvider)
         .softDelete(_existing!.id, DateTime.now().toUtc());
     if (mounted) context.pop();
-  }
-
-  String? _blankToNull(String value) {
-    final trimmed = value.trim();
-    return trimmed.isEmpty ? null : trimmed;
   }
 }
