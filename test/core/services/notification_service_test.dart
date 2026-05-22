@@ -126,6 +126,10 @@ void main() {
 
   test('schedule is a no-op but cancel still initializes on Linux', () async {
     debugDefaultTargetPlatformOverride = TargetPlatform.linux;
+    // Use a fake Linux plugin because Linux initialization does not use MethodChannel.
+    FlutterLocalNotificationsPlatform.instance = _FakeLinuxNotificationsPlugin(
+      calls,
+    );
     final service = LocalNotificationService();
 
     await service.schedule(
@@ -162,4 +166,25 @@ void main() {
       ),
     );
   });
+}
+
+class _FakeLinuxNotificationsPlugin
+    extends LinuxFlutterLocalNotificationsPlugin {
+  _FakeLinuxNotificationsPlugin(this.calls);
+
+  final List<MethodCall> calls;
+
+  @override
+  Future<bool?> initialize({
+    required LinuxInitializationSettings settings,
+    DidReceiveNotificationResponseCallback? onDidReceiveNotificationResponse,
+  }) async {
+    calls.add(const MethodCall('initialize'));
+    return true;
+  }
+
+  @override
+  Future<void> cancel({required int id}) async {
+    calls.add(const MethodCall('cancel'));
+  }
 }

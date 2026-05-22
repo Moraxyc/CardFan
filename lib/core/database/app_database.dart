@@ -46,8 +46,19 @@ class AppDatabase extends _$AppDatabase {
     )..where((row) => row.key.equals(key))).getSingleOrNull();
   }
 
-  Future<void> upsertSyncRecord(SyncRecordsCompanion entry) {
-    return into(syncRecords).insertOnConflictUpdate(entry);
+  Future<void> upsertSyncRecord(SyncRecordsCompanion entry) async {
+    if (!entry.id.present) {
+      throw ArgumentError.value(entry, 'entry', 'Sync record id is required');
+    }
+
+    // Update first so partial companions don't need insert-only required fields.
+    final updatedRows = await (update(
+      syncRecords,
+    )..where((row) => row.id.equals(entry.id.value))).write(entry);
+
+    if (updatedRows == 0) {
+      await into(syncRecords).insert(entry);
+    }
   }
 
   Future<SyncRecord?> syncRecordById(String id) {
