@@ -66,33 +66,39 @@ class SettingsPage extends ConsumerWidget {
   ) async {
     final l10n = AppLocalizations.of(context);
     final notifier = ref.read(localePreferenceProvider.notifier);
+    final messenger = ScaffoldMessenger.of(context);
     final selected = await showDialog<LocalePreference>(
       context: context,
-      builder: (context) {
+      builder: (dialogContext) {
         return SimpleDialog(
           title: Text(l10n.settingsLanguageDialogTitle),
           children: [
-            for (final preference in LocalePreference.values)
-              RadioListTile<LocalePreference>(
-                value: preference,
-                groupValue: current,
-                title: Text(_languageLabel(l10n, preference)),
-                onChanged: (value) => Navigator.of(context).pop(value),
+            RadioGroup<LocalePreference>(
+              groupValue: current,
+              onChanged: (value) => Navigator.of(dialogContext).pop(value),
+              child: Column(
+                children: [
+                  for (final preference in LocalePreference.values)
+                    RadioListTile<LocalePreference>(
+                      value: preference,
+                      title: Text(_languageLabel(l10n, preference)),
+                    ),
+                ],
               ),
+            ),
           ],
         );
       },
     );
 
-    if (!context.mounted) return;
     if (selected == null || selected == current) return;
 
     try {
       await notifier.setPreference(selected);
     } catch (_) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text(l10n.settingsLanguageSaveFailed)));
+      messenger.showSnackBar(
+        SnackBar(content: Text(l10n.settingsLanguageSaveFailed)),
+      );
     }
   }
 

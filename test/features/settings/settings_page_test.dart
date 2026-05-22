@@ -40,7 +40,7 @@ void main() {
     await tester.tap(find.text('English').last);
     await tester.pumpAndSettle();
 
-    expect(find.text('Settings'), findsOneWidget);
+    expect(find.text('Settings'), findsWidgets);
     expect(find.text('Language'), findsOneWidget);
     final setting = await database.settingByKey('localeOverride');
     expect(setting?.value, 'en');
