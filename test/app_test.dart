@@ -44,7 +44,11 @@ void main() {
         languageCode: 'zh',
         scriptCode: 'Hans',
       );
+      tester.platformDispatcher.localesTestValue = const [
+        Locale.fromSubtags(languageCode: 'zh', scriptCode: 'Hans'),
+      ];
       addTearDown(tester.platformDispatcher.clearLocaleTestValue);
+      addTearDown(tester.platformDispatcher.clearLocalesTestValue);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -62,6 +66,8 @@ void main() {
       );
       expect(materialApp.supportedLocales, AppLocalizations.supportedLocales);
       expect(materialApp.onGenerateTitle, isNotNull);
+
+      await tester.pumpAndSettle();
 
       final context = tester.element(find.text('首页').first);
       expect(AppLocalizations.of(context).appTitle, 'CardFan');

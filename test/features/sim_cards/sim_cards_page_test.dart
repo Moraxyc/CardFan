@@ -10,8 +10,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late AppDatabase database;
 
-  setUp(() {
+  setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
+    await database.upsertSetting(
+      'localeOverride',
+      'zh-Hans',
+      DateTime.utc(2026),
+    );
   });
 
   tearDown(() async {

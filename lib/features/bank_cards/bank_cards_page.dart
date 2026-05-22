@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 
 class BankCardsPage extends ConsumerWidget {
   const BankCardsPage({super.key});
@@ -11,13 +12,14 @@ class BankCardsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bankCards = ref.watch(_activeBankCardsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('银行卡')),
+      appBar: AppBar(title: Text(l10n.bankCardsTitle)),
       body: bankCards.when(
         data: (items) {
           if (items.isEmpty) {
-            return const _EmptyBankCardsView();
+            return _EmptyBankCardsView(l10n: l10n);
           }
 
           return ListView.separated(
@@ -30,7 +32,9 @@ class BankCardsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('加载银行卡失败：$error')),
+        error: (error, stackTrace) => Center(
+          child: Text(l10n.bankCardsLoadError(error: error.toString())),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'bankCardsAddFab',
@@ -46,7 +50,9 @@ final _activeBankCardsProvider = StreamProvider<List<BankCard>>((ref) {
 });
 
 class _EmptyBankCardsView extends StatelessWidget {
-  const _EmptyBankCardsView();
+  const _EmptyBankCardsView({required this.l10n});
+
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -63,14 +69,14 @@ class _EmptyBankCardsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '还没有银行卡',
+              l10n.bankCardsEmptyTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
-              '添加第一张银行卡，记录账单日和还款日。',
+              l10n.bankCardsEmptySubtitle,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -90,15 +96,20 @@ class _BankCardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final details = [
       if (bankCard.cardName != null && bankCard.cardName!.isNotEmpty)
         bankCard.cardName!,
-      '尾号 ${bankCard.lastFourDigits}',
-      if (bankCard.statementDay != null) '账单日 ${bankCard.statementDay} 日',
-      if (bankCard.paymentDueDay != null) '还款日 ${bankCard.paymentDueDay} 日',
+      l10n.bankCardLastFour(last4: bankCard.lastFourDigits),
+      if (bankCard.statementDay != null)
+        l10n.bankCardStatementDay(day: bankCard.statementDay!),
+      if (bankCard.paymentDueDay != null)
+        l10n.bankCardPaymentDay(day: bankCard.paymentDueDay!),
       if (bankCard.creditLimitCents != null)
-        '额度 ¥${(bankCard.creditLimitCents! / 100).toStringAsFixed(2)}',
-    ].join(' · ');
+        l10n.bankCardCreditLimit(
+          amount: (bankCard.creditLimitCents! / 100).toStringAsFixed(2),
+        ),
+    ].join(l10n.commonDetailSeparator);
 
     return Card(
       child: ListTile(
