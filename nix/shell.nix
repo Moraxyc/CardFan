@@ -28,6 +28,7 @@
             ANDROID_SDK_ROOT = "${androidSdk}/libexec/android-sdk";
             ANDROID_HOME = "${androidSdk}/libexec/android-sdk";
             GRADLE_OPTS = "-Dorg.gradle.project.android.aapt2FromMavenOverride=${androidSdk}/libexec/android-sdk/build-tools/${buildToolsVersion}/aapt2";
+            GRADLE_USER_HOME = ".gradle";
 
             CMAKE_INSTALL_PREFIX = "build/linux/x64/debug/bundle";
 

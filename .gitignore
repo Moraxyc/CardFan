@@ -47,3 +47,13 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+/android/build
+
+# Secrets
+.secrets/
+.envrc.local
+android/key.properties
+android/*.jks
+*.keystore
+*.jks
+.gradle/
