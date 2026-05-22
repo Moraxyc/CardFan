@@ -127,6 +127,10 @@ void main() {
   test('schedule is a no-op but cancel still initializes on Linux', () async {
     debugDefaultTargetPlatformOverride = TargetPlatform.linux;
     // Use a fake Linux plugin because Linux initialization does not use MethodChannel.
+    final previousInstance = FlutterLocalNotificationsPlatform.instance;
+    addTearDown(
+      () => FlutterLocalNotificationsPlatform.instance = previousInstance,
+    );
     FlutterLocalNotificationsPlatform.instance = _FakeLinuxNotificationsPlugin(
       calls,
     );

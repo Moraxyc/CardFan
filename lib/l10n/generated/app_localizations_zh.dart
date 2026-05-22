@@ -378,6 +378,9 @@ class AppLocalizationsZh extends AppLocalizations {
   }
 
   @override
+  String get commonNotesLabel => '备注';
+
+  @override
   String get commonDetailSeparator => ' · ';
 }
 
@@ -755,6 +758,9 @@ class AppLocalizationsZhHans extends AppLocalizationsZh {
   }
 
   @override
+  String get commonNotesLabel => '备注';
+
+  @override
   String get commonDetailSeparator => ' · ';
 }
 
@@ -1130,6 +1136,9 @@ class AppLocalizationsZhHant extends AppLocalizationsZh {
   String commonDayOfMonth({required int day}) {
     return '$day 日';
   }
+
+  @override
+  String get commonNotesLabel => '備註';
 
   @override
   String get commonDetailSeparator => ' · ';

@@ -396,5 +396,8 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get commonNotesLabel => 'Notes';
+
+  @override
   String get commonDetailSeparator => ' · ';
 }

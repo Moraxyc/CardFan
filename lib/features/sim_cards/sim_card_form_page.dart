@@ -174,9 +174,7 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
                 TextFormField(
                   key: const Key('notesField'),
                   controller: _notesController,
-                  decoration: InputDecoration(
-                    labelText: l10n.simCardNotesLabel,
-                  ),
+                  decoration: InputDecoration(labelText: l10n.commonNotesLabel),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 24),

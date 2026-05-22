@@ -754,6 +754,12 @@ abstract class AppLocalizations {
   /// **'{day} 日'**
   String commonDayOfMonth({required int day});
 
+  /// Generic notes field label
+  ///
+  /// In zh_Hans, this message translates to:
+  /// **'备注'**
+  String get commonNotesLabel;
+
   /// Separator between list detail fragments
   ///
   /// In zh_Hans, this message translates to:

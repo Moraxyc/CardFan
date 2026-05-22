@@ -109,5 +109,6 @@
   "actionConfirmDelete": "確認刪除",
   "commonNotSet": "未設定",
   "commonDayOfMonth": "{day} 日",
+  "commonNotesLabel": "備註",
   "commonDetailSeparator": " · "
 }

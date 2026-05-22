@@ -218,6 +218,8 @@
   "@commonNotSet": {"description": "Generic unset field label"},
   "commonDayOfMonth": "{day} 日",
   "@commonDayOfMonth": {"description": "Day of month option label", "placeholders": {"day": {"type": "int", "example": "15"}}},
+  "commonNotesLabel": "备注",
+  "@commonNotesLabel": {"description": "Generic notes field label"},
   "commonDetailSeparator": " · ",
   "@commonDetailSeparator": {"description": "Separator between list detail fragments"}
 }
