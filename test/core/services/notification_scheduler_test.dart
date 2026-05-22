@@ -68,6 +68,51 @@ void main() {
     },
   );
 
+  test(
+    'keeps reminder enabled when offline scheduling is unsupported but notifications work',
+    () async {
+      final service = FakeNotificationService()
+        ..supportsOfflineScheduling = false;
+      final scheduler = NotificationScheduler(service);
+      final reminder = _reminder(
+        id: 'reminder-1',
+        title: 'Pay rent',
+        scheduledAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
+        notificationId: 42,
+      );
+
+      final notificationId = await scheduler.scheduleReminder(reminder);
+
+      expect(notificationId, 42);
+      expect(service.permissionRequests, 1);
+      expect(service.scheduled, isEmpty);
+      expect(service.cancelled, isEmpty);
+    },
+  );
+
+  test(
+    'shows runtime notification when offline scheduling is unsupported',
+    () async {
+      final service = FakeNotificationService()
+        ..supportsOfflineScheduling = false;
+      final scheduler = NotificationScheduler(service);
+
+      await scheduler.showRuntimeReminder(
+        _reminder(
+          id: 'reminder-1',
+          title: 'Pay rent',
+          body: 'Before 6pm',
+          scheduledAt: DateTime.utc(2026, 5, 23, 10),
+          notificationId: 42,
+        ),
+      );
+
+      expect(service.shown, [
+        const ShownNotification(id: 42, title: 'Pay rent', body: 'Before 6pm'),
+      ]);
+    },
+  );
+
   test('cancels existing notification when reminder is disabled', () async {
     final service = FakeNotificationService();
     final scheduler = NotificationScheduler(service);

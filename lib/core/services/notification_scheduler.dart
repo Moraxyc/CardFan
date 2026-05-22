@@ -26,6 +26,10 @@ class NotificationScheduler {
       return null;
     }
 
+    if (!_service.supportsOfflineScheduling) {
+      return notificationId;
+    }
+
     await _service.schedule(
       id: notificationId,
       title: reminder.title,
@@ -33,6 +37,20 @@ class NotificationScheduler {
       scheduledAt: reminder.scheduledAt,
     );
     return notificationId;
+  }
+
+  Future<void> showRuntimeReminder(Reminder reminder) async {
+    final notificationId = reminder.notificationId ?? _stableId(reminder.id);
+    final granted = await _service.requestPermissions();
+    if (!granted) {
+      return;
+    }
+
+    await _service.show(
+      id: notificationId,
+      title: reminder.title,
+      body: reminder.body ?? '',
+    );
   }
 
   Future<int?> rescheduleReminder(
