@@ -10,8 +10,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late AppDatabase database;
 
-  setUp(() {
+  setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
+    await database.upsertSetting(
+      'localeOverride',
+      'zh-Hans',
+      DateTime.utc(2026),
+    );
   });
 
   tearDown(() async {
@@ -25,7 +30,9 @@ void main() {
         child: const CardFanApp(),
       ),
     );
-    await tester.tap(find.text('银行卡'));
+    await tester.pumpAndSettle();
+    final navBar = find.byType(NavigationBar);
+    await tester.tap(find.descendant(of: navBar, matching: find.text('银行卡')));
     await tester.pumpAndSettle();
   }
 
@@ -80,7 +87,8 @@ void main() {
 
       await tester.tap(find.text('SIM'));
       await tester.pumpAndSettle();
-      await tester.tap(find.text('银行卡'));
+      final navBar = find.byType(NavigationBar);
+      await tester.tap(find.descendant(of: navBar, matching: find.text('银行卡')));
       await tester.pumpAndSettle();
 
       expect(tester.takeException(), isNull);

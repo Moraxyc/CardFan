@@ -38,9 +38,9 @@ void main() {
   ) async {
     await pumpDashboard(tester);
 
-    expect(find.text('还没有卡片记录'), findsOneWidget);
-    expect(find.text('添加 SIM 卡'), findsOneWidget);
-    expect(find.text('添加银行卡'), findsOneWidget);
+    expect(find.text('No cards yet'), findsOneWidget);
+    expect(find.text('Add SIM Card'), findsOneWidget);
+    expect(find.text('Add Bank Card'), findsOneWidget);
     expect(find.text('0 张 SIM 卡'), findsNothing);
     expect(find.text('0 张银行卡'), findsNothing);
     expect(find.text('中国移动 SIM 卡'), findsNothing);
@@ -109,14 +109,44 @@ void main() {
 
     await pumpDashboard(tester);
 
-    expect(find.text('SIM 卡'), findsOneWidget);
-    expect(find.text('2 张 SIM 卡'), findsOneWidget);
-    expect(find.text('续费日：每月 10 日'), findsOneWidget);
-    expect(find.text('1 张银行卡'), findsOneWidget);
-    expect(find.text('还款日：每月 18 日'), findsOneWidget);
+    expect(find.text('SIM Cards'), findsOneWidget);
+    expect(find.text('2 SIM cards'), findsOneWidget);
+    expect(find.text('Renews on day 10 each month'), findsOneWidget);
+    expect(find.text('1 bank card'), findsOneWidget);
+    expect(find.text('Payment due on day 18 each month'), findsOneWidget);
     expect(find.text('已删除电信'), findsNothing);
     expect(find.text('已删除银行'), findsNothing);
     expect(find.text('未记录账单'), findsNothing);
+
+    await disposeApp(tester);
+  });
+
+  testWidgets('renders English SIM card plural', (tester) async {
+    final now = DateTime.utc(2026);
+    await database.upsertSetting('localeOverride', 'en', now);
+
+    await database.simCardsDao.create(
+      SimCardsCompanion.insert(
+        id: 'sim-1',
+        carrierName: 'Carrier A',
+        phoneNumber: '+15551234567',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+    await database.simCardsDao.create(
+      SimCardsCompanion.insert(
+        id: 'sim-2',
+        carrierName: 'Carrier B',
+        phoneNumber: '+15557654321',
+        createdAt: now,
+        updatedAt: now,
+      ),
+    );
+
+    await pumpDashboard(tester);
+
+    expect(find.text('2 SIM cards'), findsOneWidget);
 
     await disposeApp(tester);
   });
@@ -136,8 +166,8 @@ void main() {
     );
     await tester.pumpAndSettle();
 
-    expect(find.text('1 张 SIM 卡'), findsOneWidget);
-    expect(find.text('未设置续费日'), findsOneWidget);
+    expect(find.text('1 SIM card'), findsOneWidget);
+    expect(find.text('No renewal day set'), findsOneWidget);
 
     await disposeApp(tester);
   });

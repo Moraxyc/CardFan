@@ -10,8 +10,13 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   late AppDatabase database;
 
-  setUp(() {
+  setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
+    await database.upsertSetting(
+      'localeOverride',
+      'zh-Hans',
+      DateTime.utc(2026),
+    );
   });
 
   tearDown(() async {
@@ -144,6 +149,19 @@ void main() {
     expect(updated?.carrierName, '中国电信');
     expect(updated?.monthlyFeeCents, 12900);
     expect(updated?.syncStatus, 'pending');
+
+    await disposeApp(tester);
+  });
+
+  testWidgets('shows English validation messages', (tester) async {
+    await database.upsertSetting('localeOverride', 'en', DateTime.utc(2026));
+    await openAddForm(tester);
+
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+
+    expect(find.text('Enter a carrier'), findsOneWidget);
+    expect(find.text('Enter a phone number'), findsOneWidget);
 
     await disposeApp(tester);
   });

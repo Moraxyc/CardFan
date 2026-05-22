@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../l10n/generated/app_localizations.dart';
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
 import '../../core/providers/notification_provider.dart';
@@ -55,9 +56,10 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
     if (!mounted) return;
 
     if (reminder == null || reminder.deletedAt != null) {
+      final l10n = AppLocalizations.of(context);
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(const SnackBar(content: Text('提醒不存在')));
+      ).showSnackBar(SnackBar(content: Text(l10n.reminderMissing)));
       context.pop();
       return;
     }
@@ -73,15 +75,18 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final notificationService = ref.watch(notificationServiceProvider);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? '编辑提醒' : '新增提醒'),
+        title: Text(
+          _isEditing ? l10n.reminderEditTitle : l10n.reminderAddTitle,
+        ),
         actions: [
           if (_isEditing)
             TextButton(
               onPressed: _saving || _existing == null ? null : _confirmDelete,
-              child: const Text('删除'),
+              child: Text(l10n.actionDelete),
             ),
         ],
       ),
@@ -89,20 +94,20 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
         padding: const EdgeInsets.all(16),
         children: [
           if (!notificationService.supportsNotifications) ...[
-            const Card(
+            Card(
               child: ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text('当前平台不支持通知提醒'),
-                subtitle: Text('此平台无法发送本地通知。'),
+                leading: const Icon(Icons.info_outline),
+                title: Text(l10n.reminderUnsupportedNotificationsTitle),
+                subtitle: Text(l10n.reminderUnsupportedNotificationsSubtitle),
               ),
             ),
             const SizedBox(height: 12),
           ] else if (!notificationService.supportsOfflineScheduling) ...[
-            const Card(
+            Card(
               child: ListTile(
-                leading: Icon(Icons.info_outline),
-                title: Text('当前平台不支持关闭应用后的通知提醒'),
-                subtitle: Text('应用运行时仍会尽量发送本地通知。'),
+                leading: const Icon(Icons.info_outline),
+                title: Text(l10n.reminderUnsupportedOfflineTitle),
+                subtitle: Text(l10n.reminderUnsupportedOfflineSubtitle),
               ),
             ),
             const SizedBox(height: 12),
@@ -114,11 +119,13 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
                 TextFormField(
                   key: const Key('reminderTitleField'),
                   controller: _titleController,
-                  decoration: const InputDecoration(labelText: '提醒标题'),
+                  decoration: InputDecoration(
+                    labelText: l10n.reminderTitleLabel,
+                  ),
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return '请输入提醒标题';
+                      return l10n.reminderTitleRequired;
                     }
                     return null;
                   },
@@ -127,14 +134,17 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
                 TextFormField(
                   key: const Key('reminderBodyField'),
                   controller: _bodyController,
-                  decoration: const InputDecoration(labelText: '提醒内容'),
+                  decoration: InputDecoration(
+                    labelText: l10n.reminderBodyLabel,
+                  ),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 12),
                 FormField<DateTime>(
                   key: const Key('scheduledAtValidator'),
                   initialValue: _scheduledAt,
-                  validator: (_) => _scheduledAt == null ? '请选择提醒时间' : null,
+                  validator: (_) =>
+                      _scheduledAt == null ? l10n.reminderTimeRequired : null,
                   builder: (field) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,10 +153,10 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
                           key: const Key('scheduledAtField'),
                           contentPadding: EdgeInsets.zero,
                           leading: const Icon(Icons.schedule),
-                          title: const Text('提醒时间'),
+                          title: Text(l10n.reminderTimeLabel),
                           subtitle: Text(
                             _scheduledAt == null
-                                ? '未选择'
+                                ? l10n.reminderTimeUnselected
                                 : formatReminderDate(_scheduledAt!),
                           ),
                           trailing: const Icon(Icons.chevron_right),
@@ -170,8 +180,8 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
                 SwitchListTile(
                   key: const Key('reminderEnabledSwitch'),
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('启用通知'),
-                  subtitle: const Text('关闭后会取消已安排的通知'),
+                  title: Text(l10n.reminderEnableNotifications),
+                  subtitle: Text(l10n.reminderEnableNotificationsSubtitle),
                   value: _enabled,
                   onChanged: (value) => setState(() => _enabled = value),
                 ),
@@ -184,7 +194,7 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.save),
-                  label: const Text('保存'),
+                  label: Text(l10n.actionSave),
                 ),
               ],
             ),
@@ -290,9 +300,10 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
 
       if (mounted) {
         if (offlineSchedulingUnsupported) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('已保存；关闭应用后不会触发通知')));
+          final l10n = AppLocalizations.of(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(l10n.reminderSavedOfflineUnsupported)),
+          );
         }
         context.pop();
       }
@@ -305,17 +316,18 @@ class _ReminderFormPageState extends ConsumerState<ReminderFormPage> {
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
+        final dialogL10n = AppLocalizations.of(context);
         return AlertDialog(
-          title: const Text('删除提醒'),
-          content: const Text('删除后会从列表隐藏，并取消对应通知。'),
+          title: Text(dialogL10n.reminderDeleteTitle),
+          content: Text(dialogL10n.reminderDeleteMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('取消'),
+              child: Text(dialogL10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('确认删除'),
+              child: Text(dialogL10n.actionConfirmDelete),
             ),
           ],
         );

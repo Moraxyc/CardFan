@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/utils.dart';
 
 class BankCardFormPage extends ConsumerStatefulWidget {
@@ -59,9 +60,10 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
     if (!mounted) return;
 
     if (bankCard == null || bankCard.deletedAt != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('银行卡不存在')));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).bankCardMissing)),
+      );
       context.pop();
       return;
     }
@@ -82,14 +84,17 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? '编辑银行卡' : '新增银行卡'),
+        title: Text(
+          _isEditing ? l10n.bankCardEditTitle : l10n.bankCardAddTitle,
+        ),
         actions: [
           if (_isEditing)
             TextButton(
               onPressed: _saving || _existing == null ? null : _confirmDelete,
-              child: const Text('删除'),
+              child: Text(l10n.actionDelete),
             ),
         ],
       ),
@@ -103,11 +108,13 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 TextFormField(
                   key: const Key('bankNameField'),
                   controller: _bankNameController,
-                  decoration: const InputDecoration(labelText: '银行名称'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardBankNameLabel,
+                  ),
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return '请输入银行名称';
+                      return l10n.bankCardBankNameRequired;
                     }
                     return null;
                   },
@@ -116,16 +123,18 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 TextFormField(
                   key: const Key('lastFourDigitsField'),
                   controller: _lastFourDigitsController,
-                  decoration: const InputDecoration(labelText: '卡号后四位'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardLastFourLabel,
+                  ),
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.isEmpty) {
-                      return '请输入 4 位数字尾号';
+                      return l10n.bankCardLastFourInvalid;
                     }
                     if (!RegExp(r'^\d{4}$').hasMatch(trimmed)) {
-                      return '请输入 4 位数字尾号';
+                      return l10n.bankCardLastFourInvalid;
                     }
                     return null;
                   },
@@ -134,14 +143,18 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 TextFormField(
                   key: const Key('cardNameField'),
                   controller: _cardNameController,
-                  decoration: const InputDecoration(labelText: '卡片名称'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardNameLabel,
+                  ),
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   key: const Key('creditLimitField'),
                   controller: _creditLimitController,
-                  decoration: const InputDecoration(labelText: '信用额度（元）'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardCreditLimitLabel,
+                  ),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
@@ -150,10 +163,10 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                     final trimmed = value?.trim() ?? '';
                     if (trimmed.isEmpty) return null;
                     if (trimmed.startsWith('-')) {
-                      return '请输入有效额度';
+                      return l10n.bankCardCreditLimitInvalid;
                     }
                     if (!RegExp(r'^\d{1,8}(\.\d{1,2})?$').hasMatch(trimmed)) {
-                      return '信用额度最多支持 2 位小数';
+                      return l10n.bankCardCreditLimitTooPrecise;
                     }
                     return null;
                   },
@@ -161,15 +174,17 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 const SizedBox(height: 12),
                 DropdownButtonFormField<int>(
                   key: const Key('statementDayField'),
-                  decoration: const InputDecoration(labelText: '账单日'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardStatementDayLabel,
+                  ),
                   initialValue: _statementDay,
                   items: [
-                    const DropdownMenuItem<int>(child: Text('未设置')),
+                    DropdownMenuItem<int>(child: Text(l10n.commonNotSet)),
                     ...List.generate(31, (index) {
                       final day = index + 1;
                       return DropdownMenuItem(
                         value: day,
-                        child: Text('$day 日'),
+                        child: Text(l10n.commonDayOfMonth(day: day)),
                       );
                     }),
                   ],
@@ -180,15 +195,17 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 const SizedBox(height: 12),
                 DropdownButtonFormField<int>(
                   key: const Key('paymentDueDayField'),
-                  decoration: const InputDecoration(labelText: '还款日'),
+                  decoration: InputDecoration(
+                    labelText: l10n.bankCardPaymentDueDayLabel,
+                  ),
                   initialValue: _paymentDueDay,
                   items: [
-                    const DropdownMenuItem<int>(child: Text('未设置')),
+                    DropdownMenuItem<int>(child: Text(l10n.commonNotSet)),
                     ...List.generate(31, (index) {
                       final day = index + 1;
                       return DropdownMenuItem(
                         value: day,
-                        child: Text('$day 日'),
+                        child: Text(l10n.commonDayOfMonth(day: day)),
                       );
                     }),
                   ],
@@ -200,7 +217,7 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                 TextFormField(
                   key: const Key('notesField'),
                   controller: _notesController,
-                  decoration: const InputDecoration(labelText: '备注'),
+                  decoration: InputDecoration(labelText: l10n.commonNotesLabel),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 24),
@@ -212,7 +229,7 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.save),
-                  label: const Text('保存'),
+                  label: Text(l10n.actionSave),
                 ),
               ],
             ),
@@ -281,20 +298,21 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
   }
 
   Future<void> _confirmDelete() async {
+    final l10n = AppLocalizations.of(context);
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('删除银行卡'),
-          content: const Text('删除后会从列表隐藏，并保留同步所需记录。'),
+          title: Text(l10n.bankCardDeleteTitle),
+          content: Text(l10n.bankCardDeleteMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('取消'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('确认删除'),
+              child: Text(l10n.actionConfirmDelete),
             ),
           ],
         );

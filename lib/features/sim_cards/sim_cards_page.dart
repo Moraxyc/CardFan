@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import 'phone_number_format.dart';
 
 class SimCardsPage extends ConsumerWidget {
@@ -12,13 +13,14 @@ class SimCardsPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final simCards = ref.watch(_activeSimCardsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('SIM 卡')),
+      appBar: AppBar(title: Text(l10n.simCardsTitle)),
       body: simCards.when(
         data: (items) {
           if (items.isEmpty) {
-            return const _EmptySimCardsView();
+            return _EmptySimCardsView(l10n: l10n);
           }
 
           return ListView.separated(
@@ -31,7 +33,9 @@ class SimCardsPage extends ConsumerWidget {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('加载 SIM 卡失败：$error')),
+        error: (error, stackTrace) => Center(
+          child: Text(l10n.simCardsLoadError(error: error.toString())),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         heroTag: 'simCardsAddFab',
@@ -47,7 +51,9 @@ final _activeSimCardsProvider = StreamProvider<List<SimCard>>((ref) {
 });
 
 class _EmptySimCardsView extends StatelessWidget {
-  const _EmptySimCardsView();
+  const _EmptySimCardsView({required this.l10n});
+
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -64,14 +70,14 @@ class _EmptySimCardsView extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             Text(
-              '还没有 SIM 卡',
+              l10n.simCardsEmptyTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
-              '添加第一张 SIM 卡，记录号码、套餐和续费信息。',
+              l10n.simCardsEmptySubtitle,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
@@ -91,13 +97,17 @@ class _SimCardListTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final details = [
       if (simCard.planName != null && simCard.planName!.isNotEmpty)
         simCard.planName!,
       if (simCard.monthlyFeeCents != null)
-        '¥${(simCard.monthlyFeeCents! / 100).toStringAsFixed(2)}',
-      if (simCard.billingDay != null) '每月 ${simCard.billingDay} 日',
-    ].join(' · ');
+        l10n.simCardMonthlyFee(
+          amount: (simCard.monthlyFeeCents! / 100).toStringAsFixed(2),
+        ),
+      if (simCard.billingDay != null)
+        l10n.simCardBillingDay(day: simCard.billingDay!),
+    ].join(l10n.commonDetailSeparator);
 
     return Card(
       child: ListTile(

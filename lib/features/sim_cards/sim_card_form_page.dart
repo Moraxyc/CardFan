@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/utils.dart';
 import 'phone_number_format.dart';
 
@@ -64,9 +65,10 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
     }
 
     if (simCard == null || simCard.deletedAt != null) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('SIM 卡不存在')));
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(AppLocalizations.of(context).simCardMissing)),
+      );
       context.pop();
       return;
     }
@@ -86,14 +88,15 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(_isEditing ? '编辑 SIM 卡' : '新增 SIM 卡'),
+        title: Text(_isEditing ? l10n.simCardEditTitle : l10n.simCardAddTitle),
         actions: [
           if (_isEditing)
             TextButton(
               onPressed: _saving || _existing == null ? null : _confirmDelete,
-              child: const Text('删除'),
+              child: Text(l10n.actionDelete),
             ),
         ],
       ),
@@ -107,11 +110,13 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
                 TextFormField(
                   key: const Key('carrierNameField'),
                   controller: _carrierNameController,
-                  decoration: const InputDecoration(labelText: '运营商'),
+                  decoration: InputDecoration(
+                    labelText: l10n.simCardCarrierLabel,
+                  ),
                   textInputAction: TextInputAction.next,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return '请输入运营商';
+                      return l10n.simCardCarrierRequired;
                     }
                     return null;
                   },
@@ -120,37 +125,46 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
                 TextFormField(
                   key: const Key('phoneNumberField'),
                   controller: _phoneNumberController,
-                  decoration: const InputDecoration(labelText: '手机号'),
+                  decoration: InputDecoration(
+                    labelText: l10n.simCardPhoneLabel,
+                  ),
                   keyboardType: TextInputType.phone,
                   textInputAction: TextInputAction.next,
-                  validator: _validatePhoneNumber,
+                  validator: (v) => _validatePhoneNumber(l10n, v),
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   key: const Key('planNameField'),
                   controller: _planNameController,
-                  decoration: const InputDecoration(labelText: '套餐名称'),
+                  decoration: InputDecoration(labelText: l10n.simCardPlanLabel),
                   textInputAction: TextInputAction.next,
                 ),
                 const SizedBox(height: 12),
                 TextFormField(
                   key: const Key('monthlyFeeField'),
                   controller: _monthlyFeeController,
-                  decoration: const InputDecoration(labelText: '月费（元）'),
+                  decoration: InputDecoration(
+                    labelText: l10n.simCardMonthlyFeeLabel,
+                  ),
                   keyboardType: const TextInputType.numberWithOptions(
                     decimal: true,
                   ),
                   textInputAction: TextInputAction.next,
-                  validator: _validateMonthlyFee,
+                  validator: (v) => _validateMonthlyFee(l10n, v),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<int>(
                   key: const Key('billingDayField'),
-                  decoration: const InputDecoration(labelText: '账单日'),
+                  decoration: InputDecoration(
+                    labelText: l10n.simCardBillingDayLabel,
+                  ),
                   initialValue: _parseNullableInt(_billingDayController.text),
                   items: List.generate(31, (index) {
                     final day = index + 1;
-                    return DropdownMenuItem(value: day, child: Text('$day 日'));
+                    return DropdownMenuItem(
+                      value: day,
+                      child: Text(l10n.commonDayOfMonth(day: day)),
+                    );
                   }),
                   onChanged: (value) {
                     _billingDayController.text = value?.toString() ?? '';
@@ -160,7 +174,7 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
                 TextFormField(
                   key: const Key('notesField'),
                   controller: _notesController,
-                  decoration: const InputDecoration(labelText: '备注'),
+                  decoration: InputDecoration(labelText: l10n.commonNotesLabel),
                   maxLines: 3,
                 ),
                 const SizedBox(height: 24),
@@ -172,7 +186,7 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : const Icon(Icons.save),
-                  label: const Text('保存'),
+                  label: Text(l10n.actionSave),
                 ),
               ],
             ),
@@ -182,19 +196,19 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
     );
   }
 
-  String? _validatePhoneNumber(String? value) {
+  String? _validatePhoneNumber(AppLocalizations l10n, String? value) {
     final trimmed = value?.trim() ?? '';
     if (trimmed.isEmpty) {
-      return '请输入手机号';
+      return l10n.simCardPhoneRequired;
     }
 
     if (normalizePhoneNumberToE164(trimmed) == null) {
-      return '请输入国际格式手机号，例如 +886912345678';
+      return l10n.simCardPhoneInvalid;
     }
     return null;
   }
 
-  String? _validateMonthlyFee(String? value) {
+  String? _validateMonthlyFee(AppLocalizations l10n, String? value) {
     final trimmed = value?.trim() ?? '';
     if (trimmed.isEmpty) {
       return null;
@@ -202,11 +216,11 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
 
     final pattern = RegExp(r'^\d{1,8}(\.\d{1,2})?$');
     if (!pattern.hasMatch(trimmed)) {
-      return '月费最多支持 2 位小数';
+      return l10n.simCardMonthlyFeeTooPrecise;
     }
 
     if (_parseMonthlyFeeCents(trimmed) == null) {
-      return '请输入有效月费';
+      return l10n.simCardMonthlyFeeInvalid;
     }
 
     return null;
@@ -269,20 +283,21 @@ class _SimCardFormPageState extends ConsumerState<SimCardFormPage> {
   }
 
   Future<void> _confirmDelete() async {
+    final l10n = AppLocalizations.of(context);
     final shouldDelete = await showDialog<bool>(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('删除 SIM 卡'),
-          content: const Text('删除后会从列表隐藏，并保留同步所需记录。'),
+          title: Text(l10n.simCardDeleteTitle),
+          content: Text(l10n.simCardDeleteMessage),
           actions: [
             TextButton(
               onPressed: () => Navigator.of(context).pop(false),
-              child: const Text('取消'),
+              child: Text(l10n.actionCancel),
             ),
             FilledButton(
               onPressed: () => Navigator.of(context).pop(true),
-              child: const Text('确认删除'),
+              child: Text(l10n.actionConfirmDelete),
             ),
           ],
         );

@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../l10n/generated/app_localizations.dart';
 import '../../shared/widgets/status_card.dart';
 
 class DashboardPage extends ConsumerWidget {
@@ -13,17 +14,22 @@ class DashboardPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final simCards = ref.watch(_dashboardSimCardsProvider);
     final bankCards = ref.watch(_dashboardBankCardsProvider);
+    final l10n = AppLocalizations.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('首页')),
+      appBar: AppBar(title: Text(l10n.dashboardTitle)),
       body: simCards.when(
         data: (sims) => bankCards.when(
           data: (cards) => _DashboardContent(simCards: sims, bankCards: cards),
           loading: () => const Center(child: CircularProgressIndicator()),
-          error: (error, stackTrace) => Center(child: Text('加载首页失败：$error')),
+          error: (error, stackTrace) => Center(
+            child: Text(l10n.dashboardLoadError(error: error.toString())),
+          ),
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, stackTrace) => Center(child: Text('加载首页失败：$error')),
+        error: (error, stackTrace) => Center(
+          child: Text(l10n.dashboardLoadError(error: error.toString())),
+        ),
       ),
     );
   }
@@ -45,27 +51,28 @@ class _DashboardContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final hasRecords = simCards.isNotEmpty || bankCards.isNotEmpty;
 
     if (!hasRecords) {
-      return const _EmptyDashboardView();
+      return _EmptyDashboardView(l10n: l10n);
     }
 
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
         StatusCard(
-          title: 'SIM 卡',
-          subtitle: '${simCards.length} 张 SIM 卡',
-          statusText: _nextBillingText(simCards),
+          title: l10n.dashboardSimCardTitle,
+          subtitle: l10n.dashboardSimCardCount(count: simCards.length),
+          statusText: _nextBillingText(l10n, simCards),
           level: StatusLevel.normal,
           icon: Icons.sim_card,
         ),
         const SizedBox(height: 8),
         StatusCard(
-          title: '银行卡',
-          subtitle: '${bankCards.length} 张银行卡',
-          statusText: _nextPaymentText(bankCards),
+          title: l10n.dashboardBankCardTitle,
+          subtitle: l10n.dashboardBankCardCount(count: bankCards.length),
+          statusText: _nextPaymentText(l10n, bankCards),
           level: StatusLevel.normal,
           icon: Icons.credit_card,
         ),
@@ -73,28 +80,30 @@ class _DashboardContent extends StatelessWidget {
     );
   }
 
-  String _nextBillingText(List<SimCard> cards) {
+  String _nextBillingText(AppLocalizations l10n, List<SimCard> cards) {
     final days = cards.map((card) => card.billingDay).whereType<int>().toList()
       ..sort();
     if (days.isEmpty) {
-      return '未设置续费日';
+      return l10n.dashboardNoBillingDay;
     }
-    return '续费日：每月 ${days.first} 日';
+    return l10n.dashboardBillingDay(day: days.first);
   }
 
-  String _nextPaymentText(List<BankCard> cards) {
+  String _nextPaymentText(AppLocalizations l10n, List<BankCard> cards) {
     final days =
         cards.map((card) => card.paymentDueDay).whereType<int>().toList()
           ..sort();
     if (days.isEmpty) {
-      return '未设置还款日';
+      return l10n.dashboardNoPaymentDay;
     }
-    return '还款日：每月 ${days.first} 日';
+    return l10n.dashboardPaymentDay(day: days.first);
   }
 }
 
 class _EmptyDashboardView extends StatelessWidget {
-  const _EmptyDashboardView();
+  const _EmptyDashboardView({required this.l10n});
+
+  final AppLocalizations l10n;
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +114,14 @@ class _EmptyDashboardView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '还没有卡片记录',
+              l10n.dashboardEmptyTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 8),
             Text(
-              '先添加 SIM 卡或银行卡，首页会自动汇总本地数据。',
+              l10n.dashboardEmptySubtitle,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant,
               ),
@@ -125,12 +134,12 @@ class _EmptyDashboardView extends StatelessWidget {
                 FilledButton.icon(
                   onPressed: () => context.pushNamed('newSimCard'),
                   icon: const Icon(Icons.sim_card),
-                  label: const Text('添加 SIM 卡'),
+                  label: Text(l10n.dashboardAddSimCard),
                 ),
                 OutlinedButton.icon(
                   onPressed: () => context.pushNamed('newBankCard'),
                   icon: const Icon(Icons.credit_card),
-                  label: const Text('添加银行卡'),
+                  label: Text(l10n.dashboardAddBankCard),
                 ),
               ],
             ),

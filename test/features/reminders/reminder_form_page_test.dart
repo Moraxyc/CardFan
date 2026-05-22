@@ -15,9 +15,14 @@ void main() {
   late AppDatabase database;
   late FakeNotificationService notificationService;
 
-  setUp(() {
+  setUp(() async {
     database = AppDatabase.forTesting(NativeDatabase.memory());
     notificationService = FakeNotificationService();
+    await database.upsertSetting(
+      'localeOverride',
+      'zh-Hans',
+      DateTime.utc(2026),
+    );
   });
 
   tearDown(() async {
@@ -34,6 +39,7 @@ void main() {
         child: const CardFanApp(),
       ),
     );
+    await tester.pumpAndSettle();
     await tester.tap(find.text('提醒'));
     await tester.pumpAndSettle();
   }
@@ -122,6 +128,32 @@ void main() {
     } finally {
       debugDefaultTargetPlatformOverride = null;
     }
+  });
+
+  testWidgets('shows English validation messages', (tester) async {
+    await database.upsertSetting('localeOverride', 'en', DateTime.utc(2026));
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          databaseProvider.overrideWithValue(database),
+          notificationServiceProvider.overrideWithValue(notificationService),
+        ],
+        child: const CardFanApp(),
+      ),
+    );
+    await tester.tap(find.byIcon(Icons.notifications_outlined));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byIcon(Icons.add));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 300));
+
+    await tester.tap(find.text('Save'));
+    await tester.pump();
+
+    expect(find.text('Enter a reminder title'), findsOneWidget);
+    expect(find.text('Choose a reminder time'), findsOneWidget);
+
+    await disposeApp(tester);
   });
 
   testWidgets('validates reminder title and scheduled time', (tester) async {
