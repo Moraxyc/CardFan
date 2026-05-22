@@ -13,6 +13,13 @@
             fail-on-change = false;
           };
         };
+        # flutter
+        dart-analyze.enable = true;
+        flutter-i10n = {
+          enable = true;
+          entry = "flutter gen-l10n";
+          pass_filenames = false;
+        };
         # security
         trufflehog.enable = true;
         # nix
