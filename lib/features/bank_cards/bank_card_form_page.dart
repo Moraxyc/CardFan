@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../../core/database/app_database.dart';
 import '../../core/providers/database_provider.dart';
+import '../../shared/utils.dart';
 
 class BankCardFormPage extends ConsumerStatefulWidget {
   const BankCardFormPage({super.key, this.bankCardId});
@@ -230,11 +231,6 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
     return yuan * 100 + cents;
   }
 
-  String? _blankToNull(String value) {
-    final trimmed = value.trim();
-    return trimmed.isEmpty ? null : trimmed;
-  }
-
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -253,11 +249,11 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
             id: id,
             bankName: _bankNameController.text.trim(),
             lastFourDigits: _lastFourDigitsController.text.trim(),
-            cardName: Value(_blankToNull(_cardNameController.text)),
+            cardName: Value(blankToNull(_cardNameController.text)),
             statementDay: Value(_statementDay),
             paymentDueDay: Value(_paymentDueDay),
             creditLimitCents: Value(creditLimitCents),
-            notes: Value(_blankToNull(_notesController.text)),
+            notes: Value(blankToNull(_notesController.text)),
             createdAt: now,
             updatedAt: now,
           ),
@@ -268,11 +264,11 @@ class _BankCardFormPageState extends ConsumerState<BankCardFormPage> {
             id: Value(id),
             bankName: Value(_bankNameController.text.trim()),
             lastFourDigits: Value(_lastFourDigitsController.text.trim()),
-            cardName: Value(_blankToNull(_cardNameController.text)),
+            cardName: Value(blankToNull(_cardNameController.text)),
             statementDay: Value(_statementDay),
             paymentDueDay: Value(_paymentDueDay),
             creditLimitCents: Value(creditLimitCents),
-            notes: Value(_blankToNull(_notesController.text)),
+            notes: Value(blankToNull(_notesController.text)),
             updatedAt: Value(now),
           ),
         );
