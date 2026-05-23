@@ -45,7 +45,10 @@
                 ]
               );
           };
-          inherit (config.pre-commit.settings) shellHook;
+          shellHook = ''
+            ${config.pre-commit.settings.shellHook}
+            export LD_LIBRARY_PATH="$PWD/build/linux/x64/debug/bundle/lib:$LD_LIBRARY_PATH"
+          '';
           nativeBuildInputs =
             with pkgs;
             [
