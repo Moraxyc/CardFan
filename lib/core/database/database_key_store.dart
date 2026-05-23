@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:cardfan/core/database/database_encryption.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 const localDatabaseKeyStorageKey = 'cardfan.local_database_key.v1';
@@ -47,6 +48,7 @@ class FlutterSecureKeyValueStorage implements KeyValueSecretStorage {
   static const _iosOptions = IOSOptions(
     accessibility: KeychainAccessibility.first_unlock_this_device,
   );
+  // TODO(desktop): add mOptions/wOptions/lOptions when desktop targets are added.
 }
 
 class InvalidStoredDatabaseKeyException implements Exception {
@@ -79,13 +81,34 @@ class DatabaseKeyCodec {
 }
 
 class SecureStorageDatabaseKeyStore implements DatabaseKeyStore {
-  const SecureStorageDatabaseKeyStore({required KeyValueSecretStorage storage})
-    : _storage = storage;
+  SecureStorageDatabaseKeyStore({required KeyValueSecretStorage storage})
+    : _storage = storage {
+    if (kIsWeb) {
+      throw UnsupportedError(
+        'SecureStorageDatabaseKeyStore is not supported on web: '
+        'localStorage key storage would defeat at-rest encryption.',
+      );
+    }
+  }
 
   final KeyValueSecretStorage _storage;
+  Future<List<int>>? _pending;
 
+  // Throws if secure storage is unavailable (e.g. keychain locked on iOS before
+  // first unlock). Callers must handle first-launch failure; a write error on
+  // key generation leaves the database uninitialisable until storage recovers.
+  // Concurrent callers share a single in-flight future to avoid generating
+  // and racing-write two different keys on first launch. On failure _pending is
+  // cleared so the next caller can retry once storage becomes available again.
   @override
-  Future<List<int>> readOrCreateDatabaseKey() async {
+  Future<List<int>> readOrCreateDatabaseKey() {
+    return _pending ??= _readOrCreate().onError((error, stack) {
+      _pending = null;
+      return Future.error(error!, stack);
+    });
+  }
+
+  Future<List<int>> _readOrCreate() async {
     final storedKey = await _storage.read(key: localDatabaseKeyStorageKey);
     if (storedKey != null) {
       return DatabaseKeyCodec.decode(storedKey);

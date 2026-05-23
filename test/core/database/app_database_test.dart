@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:cardfan/core/database/app_database.dart';
+import 'package:cardfan/core/database/database_key_store.dart';
 import 'package:cardfan/core/providers/database_provider.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
@@ -200,4 +203,156 @@ void main() {
     expect(container.read(bankCardsDaoProvider), same(database.bankCardsDao));
     expect(container.read(remindersDaoProvider), same(database.remindersDao));
   });
+
+  group('getByPhoneNumber', () {
+    test(
+      'returns earliest createdAt when duplicate phone numbers exist',
+      () async {
+        final earlier = DateTime.utc(2026, 6, 1);
+        final later = DateTime.utc(2026, 6, 2);
+
+        // Insert the later row first to ensure ordering is not just insertion order.
+        await database.simCardsDao.create(
+          SimCardsCompanion.insert(
+            id: 'sim-dup-later',
+            carrierName: 'Carrier Later',
+            phoneNumber: '5550001111',
+            createdAt: later,
+            updatedAt: later,
+          ),
+        );
+        await database.simCardsDao.create(
+          SimCardsCompanion.insert(
+            id: 'sim-dup-earlier',
+            carrierName: 'Carrier Earlier',
+            phoneNumber: '5550001111',
+            createdAt: earlier,
+            updatedAt: earlier,
+          ),
+        );
+
+        final result = await database.simCardsDao.getByPhoneNumber(
+          '5550001111',
+        );
+        expect(result?.id, 'sim-dup-earlier');
+        expect(result?.carrierName, 'Carrier Earlier');
+      },
+    );
+
+    test('tiebreaks on id when createdAt is identical', () async {
+      final createdAt = DateTime.utc(2026, 6, 1);
+
+      await database.simCardsDao.create(
+        SimCardsCompanion.insert(
+          id: 'sim-dup-b',
+          carrierName: 'Carrier B',
+          phoneNumber: '5550002222',
+          createdAt: createdAt,
+          updatedAt: createdAt,
+        ),
+      );
+      await database.simCardsDao.create(
+        SimCardsCompanion.insert(
+          id: 'sim-dup-a',
+          carrierName: 'Carrier A',
+          phoneNumber: '5550002222',
+          createdAt: createdAt,
+          updatedAt: createdAt,
+        ),
+      );
+
+      final result = await database.simCardsDao.getByPhoneNumber('5550002222');
+      expect(result?.id, 'sim-dup-a');
+    });
+  });
+
+  group('encrypted file database', () {
+    test(
+      'does not expose sensitive values in raw file content and supports queries after reopen',
+      () async {
+        final tempDir = await Directory.systemTemp.createTemp(
+          'cardfan_encrypted_db_test_',
+        );
+        addTearDown(() async {
+          if (await tempDir.exists()) {
+            await tempDir.delete(recursive: true);
+          }
+        });
+
+        final keyStore = FakeDatabaseKeyStore(List<int>.filled(32, 3));
+        final firstDatabase = AppDatabase.withKeyStore(
+          databaseKeyStore: keyStore,
+          databaseFile: File('${tempDir.path}/cardfan.sqlite'),
+        );
+        addTearDown(firstDatabase.close);
+
+        await firstDatabase.simCardsDao.create(
+          SimCardsCompanion.insert(
+            id: 'sim-sensitive',
+            carrierName: 'Sensitive Carrier',
+            phoneNumber: '15551234567',
+            notes: const Value('secret sim pin 1234'),
+            createdAt: DateTime.utc(2026, 5, 23),
+            updatedAt: DateTime.utc(2026, 5, 23),
+          ),
+        );
+        await firstDatabase.bankCardsDao.create(
+          BankCardsCompanion.insert(
+            id: 'bank-sensitive',
+            bankName: 'Sensitive Bank',
+            lastFourDigits: '9876',
+            notes: const Value('secret cvv 999'),
+            createdAt: DateTime.utc(2026, 5, 23),
+            updatedAt: DateTime.utc(2026, 5, 23),
+          ),
+        );
+        await firstDatabase.close();
+
+        // Scan every file Drift/SQLite may have produced (main db, -wal, -shm,
+        // -journal), not just the main file, so a regression that leaves
+        // plaintext in a sidecar is caught.
+        const secrets = [
+          '15551234567',
+          'Sensitive Carrier',
+          'Sensitive Bank',
+          'secret sim pin 1234',
+          'secret cvv 999',
+        ];
+        final tempEntities = await tempDir.list().toList();
+        final tempFiles = tempEntities.whereType<File>().toList();
+        expect(tempFiles, isNotEmpty);
+        for (final entity in tempFiles) {
+          final bytes = await entity.readAsBytes();
+          final content = String.fromCharCodes(bytes);
+          for (final secret in secrets) {
+            expect(
+              content,
+              isNot(contains(secret)),
+              reason: '${entity.path} contains plaintext "$secret"',
+            );
+          }
+        }
+
+        final reopenedDatabase = AppDatabase.withKeyStore(
+          databaseKeyStore: keyStore,
+          databaseFile: File('${tempDir.path}/cardfan.sqlite'),
+        );
+        addTearDown(reopenedDatabase.close);
+
+        final matchingSim = await reopenedDatabase.simCardsDao.getByPhoneNumber(
+          '15551234567',
+        );
+        expect(matchingSim?.carrierName, 'Sensitive Carrier');
+      },
+    );
+  });
+}
+
+class FakeDatabaseKeyStore implements DatabaseKeyStore {
+  FakeDatabaseKeyStore(this.key);
+
+  final List<int> key;
+
+  @override
+  Future<List<int>> readOrCreateDatabaseKey() async => key;
 }

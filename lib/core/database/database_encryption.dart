@@ -2,8 +2,6 @@ import 'dart:math';
 
 import 'package:sqlite3/sqlite3.dart' as sqlite;
 
-const databaseCryptoSuite = 'sqlite3mc-sqlcipher-v4-aes-256';
-
 abstract interface class RawDatabaseHandle {
   List<List<Object?>> select(String sql);
 
@@ -55,7 +53,9 @@ class DatabaseEncryption {
 
   static List<int> generateDatabaseKey() {
     final random = Random.secure();
-    return List<int>.generate(32, (_) => random.nextInt(256), growable: false);
+    return List<int>.unmodifiable(
+      List<int>.generate(32, (_) => random.nextInt(256), growable: false),
+    );
   }
 
   static String rawSqlCipherKeyLiteral(List<int> databaseKey) {
@@ -86,7 +86,11 @@ class DatabaseEncryption {
       throw DatabaseEncryptionUnavailableException(e);
     }
 
-    database.execute("PRAGMA cipher = 'sqlcipher'");
+    try {
+      database.execute("PRAGMA cipher = 'sqlcipher'");
+    } catch (e) {
+      throw DatabaseEncryptionUnavailableException(e);
+    }
 
     try {
       final cipherRows = database.select('PRAGMA cipher;');
@@ -101,8 +105,9 @@ class DatabaseEncryption {
       throw DatabaseEncryptionUnavailableException(e);
     }
 
+    final keyLiteral = rawSqlCipherKeyLiteral(databaseKey);
     try {
-      database.execute('PRAGMA key = "${rawSqlCipherKeyLiteral(databaseKey)}"');
+      database.execute('PRAGMA key = "$keyLiteral"');
     } catch (_) {
       // Do not expose the caught exception: it may embed the PRAGMA key SQL
       // (including the key literal) in its message.

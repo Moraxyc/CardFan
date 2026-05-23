@@ -56,10 +56,26 @@ void main() {
         throwsA(isA<InvalidStoredDatabaseKeyException>()),
       );
     });
+
+    test('concurrent first-launch callers share one generated key', () async {
+      final storage = FakeSecureStorage();
+      final store = SecureStorageDatabaseKeyStore(storage: storage);
+
+      final results = await Future.wait([
+        store.readOrCreateDatabaseKey(),
+        store.readOrCreateDatabaseKey(),
+        store.readOrCreateDatabaseKey(),
+      ]);
+
+      expect(results[0], results[1]);
+      expect(results[1], results[2]);
+      expect(storage.writeCount, 1);
+    });
   });
 }
 
 class FakeSecureStorage implements KeyValueSecretStorage {
+  // `contains` on a Map checks keys; `values` here is the storage map, not its values.
   final Map<String, String> values = {};
   int writeCount = 0;
 

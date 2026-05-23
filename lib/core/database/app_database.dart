@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:cardfan/core/database/daos/bank_cards_dao.dart';
 import 'package:cardfan/core/database/daos/reminders_dao.dart';
 import 'package:cardfan/core/database/daos/sim_cards_dao.dart';
+import 'package:cardfan/core/database/database_encryption.dart';
+import 'package:cardfan/core/database/database_key_store.dart';
 import 'package:cardfan/core/database/tables/app_settings.dart';
 import 'package:cardfan/core/database/tables/bank_cards.dart';
 import 'package:cardfan/core/database/tables/reminders.dart';
@@ -10,6 +12,7 @@ import 'package:cardfan/core/database/tables/sim_cards.dart';
 import 'package:cardfan/core/database/tables/sync_records.dart';
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 
@@ -20,7 +23,24 @@ part 'app_database.g.dart';
   daos: [SimCardsDao, BankCardsDao, RemindersDao],
 )
 class AppDatabase extends _$AppDatabase {
-  AppDatabase() : super(_openConnection());
+  AppDatabase()
+    : super(
+        _openConnection(
+          databaseKeyStore: SecureStorageDatabaseKeyStore(
+            storage: FlutterSecureKeyValueStorage(const FlutterSecureStorage()),
+          ),
+        ),
+      );
+
+  AppDatabase.withKeyStore({
+    required DatabaseKeyStore databaseKeyStore,
+    File? databaseFile,
+  }) : super(
+         _openConnection(
+           databaseKeyStore: databaseKeyStore,
+           databaseFile: databaseFile,
+         ),
+       );
 
   AppDatabase.forTesting(super.executor);
 
@@ -76,13 +96,29 @@ class AppDatabase extends _$AppDatabase {
   }
 }
 
-QueryExecutor _openConnection() {
+QueryExecutor _openConnection({
+  required DatabaseKeyStore databaseKeyStore,
+  File? databaseFile,
+}) {
   return LazyDatabase(() async {
-    final dir = await getApplicationSupportDirectory();
-    await dir.create(recursive: true);
+    final file = databaseFile ?? await _defaultDatabaseFile();
+    final databaseKey = await databaseKeyStore.readOrCreateDatabaseKey();
 
-    final file = File(p.join(dir.path, 'cardfan.sqlite'));
-
-    return NativeDatabase.createInBackground(file);
+    // List<int> is isolate-sendable in Dart; the closure capture is safe here.
+    return NativeDatabase.createInBackground(
+      file,
+      setup: (rawDatabase) {
+        DatabaseEncryption.setupEncryptedDatabase(
+          SqliteRawDatabaseHandle(rawDatabase),
+          databaseKey,
+        );
+      },
+    );
   });
+}
+
+Future<File> _defaultDatabaseFile() async {
+  final dir = await getApplicationSupportDirectory();
+  await dir.create(recursive: true);
+  return File(p.join(dir.path, 'cardfan.sqlite'));
 }
