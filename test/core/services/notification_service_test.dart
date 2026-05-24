@@ -58,7 +58,7 @@ void main() {
         id: 1,
         title: 'Pay rent',
         body: 'Before 6pm',
-        scheduledAt: DateTime(2026, 5, 23, 10),
+        scheduledAt: DateTime.now().add(const Duration(hours: 1)),
       );
 
       final scheduleModes = calls

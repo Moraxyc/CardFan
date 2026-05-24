@@ -8,11 +8,12 @@ void main() {
   test('schedules an enabled reminder at its scheduled time', () async {
     final service = FakeNotificationService();
     final scheduler = NotificationScheduler(service);
+    final scheduledAt = DateTime.now().toUtc().add(const Duration(hours: 1));
     final reminder = _reminder(
       id: 'reminder-1',
       title: 'Pay rent',
       body: 'Before 6pm',
-      scheduledAt: DateTime.utc(2026, 5, 23, 10),
+      scheduledAt: scheduledAt,
       notificationId: 42,
     );
 
@@ -25,7 +26,7 @@ void main() {
         id: 42,
         title: 'Pay rent',
         body: 'Before 6pm',
-        scheduledAt: DateTime.utc(2026, 5, 23, 10),
+        scheduledAt: scheduledAt,
       ),
     ]);
     expect(service.cancelled, isEmpty);
@@ -37,7 +38,7 @@ void main() {
     final reminder = _reminder(
       id: 'reminder-1',
       title: 'Pay rent',
-      scheduledAt: DateTime.utc(2026, 5, 23, 10),
+      scheduledAt: DateTime.now().toUtc().add(const Duration(hours: 1)),
     );
 
     final firstId = await scheduler.scheduleReminder(reminder);
@@ -156,10 +157,11 @@ void main() {
   test('reschedules changed reminder by cancelling the old id first', () async {
     final service = FakeNotificationService();
     final scheduler = NotificationScheduler(service);
+    final scheduledAt = DateTime.now().toUtc().add(const Duration(hours: 1));
     final reminder = _reminder(
       id: 'reminder-1',
       title: 'Pay rent',
-      scheduledAt: DateTime.utc(2026, 5, 24, 9),
+      scheduledAt: scheduledAt,
       notificationId: 42,
     );
 
@@ -167,7 +169,7 @@ void main() {
 
     expect(service.cancelled, [7]);
     expect(service.scheduled.single.id, 42);
-    expect(service.scheduled.single.scheduledAt, DateTime.utc(2026, 5, 24, 9));
+    expect(service.scheduled.single.scheduledAt, scheduledAt);
   });
 
   test('cancels reminder notification when deleted', () async {
