@@ -13,8 +13,8 @@ void main() {
         final key = await store.readOrCreateDatabaseKey();
 
         expect(key, hasLength(32));
-        expect(storage.values, contains(localDatabaseKeyStorageKey));
-        expect(storage.values, isNot(contains('recovery_key')));
+        expect(storage.store, contains(localDatabaseKeyStorageKey));
+        expect(storage.store, isNot(contains('recovery_key')));
       },
     );
 
@@ -135,19 +135,18 @@ void main() {
 }
 
 class FakeSecureStorage implements KeyValueSecretStorage {
-  // `contains` on a Map checks keys; `values` here is the storage map, not its values.
-  final Map<String, String> values = {};
+  final Map<String, String> store = {};
   int writeCount = 0;
 
   @override
   Future<String?> read({required String key}) async {
-    return values[key];
+    return store[key];
   }
 
   @override
   Future<void> write({required String key, required String value}) async {
     writeCount += 1;
-    values[key] = value;
+    store[key] = value;
   }
 }
 
