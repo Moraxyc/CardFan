@@ -9,6 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
+  setUpAll(() {
+    // Tests intentionally create multiple AppDatabase instances (e.g. to test
+    // reopen behaviour). Each instance uses its own executor, so there are no
+    // race conditions — suppress drift's global duplicate-instance warning.
+    driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
+  });
+
   late AppDatabase database;
 
   setUp(() {
