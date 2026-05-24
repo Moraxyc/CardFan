@@ -27,6 +27,10 @@ class FlutterSecureKeyValueStorage implements KeyValueSecretStorage {
       key: key,
       aOptions: _androidOptions,
       iOptions: _iosOptions,
+      lOptions: _linuxOptions,
+      wOptions: _windowsOptions,
+      webOptions: _webOptions,
+      mOptions: _macOsOptions,
     );
   }
 
@@ -37,6 +41,10 @@ class FlutterSecureKeyValueStorage implements KeyValueSecretStorage {
       value: value,
       aOptions: _androidOptions,
       iOptions: _iosOptions,
+      lOptions: _linuxOptions,
+      wOptions: _windowsOptions,
+      webOptions: _webOptions,
+      mOptions: _macOsOptions,
     );
   }
 
@@ -48,7 +56,12 @@ class FlutterSecureKeyValueStorage implements KeyValueSecretStorage {
   static const _iosOptions = IOSOptions(
     accessibility: KeychainAccessibility.first_unlock_this_device,
   );
-  // TODO(desktop): add mOptions/wOptions/lOptions when desktop targets are added.
+  static const _linuxOptions = LinuxOptions();
+  static const _windowsOptions = WindowsOptions();
+  static const _webOptions = WebOptions();
+  static const _macOsOptions = MacOsOptions(
+    accessibility: KeychainAccessibility.first_unlock_this_device,
+  );
 }
 
 class InvalidStoredDatabaseKeyException implements Exception {
