@@ -14,6 +14,22 @@ class SimCardsDao extends DatabaseAccessor<AppDatabase>
   Future<SimCard?> getById(String id) =>
       (select(simCards)..where((row) => row.id.equals(id))).getSingleOrNull();
 
+  Future<SimCard?> getByPhoneNumber(String phoneNumber) async {
+    final rows =
+        await (select(simCards)
+              ..where(
+                (row) =>
+                    row.phoneNumber.equals(phoneNumber) &
+                    row.deletedAt.isNull(),
+              )
+              ..orderBy([
+                (t) => OrderingTerm.asc(t.createdAt),
+                (t) => OrderingTerm.asc(t.id),
+              ]))
+            .get();
+    return rows.firstOrNull;
+  }
+
   Stream<List<SimCard>> watchActive() =>
       (select(simCards)..where((row) => row.deletedAt.isNull())).watch();
 
